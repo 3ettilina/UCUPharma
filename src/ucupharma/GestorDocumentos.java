@@ -114,7 +114,7 @@ public class GestorDocumentos {
         int cantidadTotal = 0;
         double precioTotal = 0.0;
         
-        INodo<Documento> nodoVenta = listaVentas.buscar(fechaDesde);
+        INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar(fechaDesde);
         if (nodoVenta != null){
             while (nodoVenta.getSiguiente() != null){
                 Documento venta = nodoVenta.getDato();
