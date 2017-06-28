@@ -5,8 +5,7 @@
  */
 package ucupharma;
 
-import Interfaces.IProducto;
-import Interfaces.INodo;
+import Interfaces.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -74,17 +73,23 @@ public class Main {
                 String descLarga = br.readLine();
                 System.out.println("\nIngrese el estado - Activo, Inactivo o nada");
                 String estado = br.readLine(); 
+                
                 System.out.println("\nIngrese si requiere refrigeracion (True o False)");
                 String refri = br.readLine();
                 boolean refrigerado = Boolean.parseBoolean(refri);
                 System.out.println("\nIngrese si requiere receta - (True o False)");
                 String receta = br.readLine();
                 boolean reqReceta = Boolean.parseBoolean(receta);
+                System.out.println("\nIngrese la fecha de vencimiento");
+                String fVenc = br.readLine();
+                int fechaVenc = Integer.parseInt(fVenc);
+                System.out.println("\nIngrese el area de aplicacion");
+                String area = br.readLine();
                 Date fechaCreacion = ManejadorFechas.obtenerFecha();
                 Date fechaModificacion = fechaCreacion;
-                IProducto nProducto = new Producto(codigo, fechaCreacion, fechaModificacion, precio, descCorta, descLarga, estado, refrigerado, reqReceta, 0);
-                INodo<IProducto> nodoProducto = new Nodo(codigo, nProducto);
-                UcuPharma.stock.listaStock.insertarOrdenado(nodoProducto);
+                IProducto nProducto = new Producto(codigo, fechaCreacion, fechaModificacion, precio, descCorta, descLarga, estado, refrigerado, reqReceta, fechaVenc, area, 0);
+                IElementoAB<IProducto> nodoProducto = new TElementoAB(codigo, nProducto);
+                UcuPharma.stock.arbolStock.insertar(nodoProducto);
                 System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
@@ -152,8 +157,8 @@ public class Main {
             case "8":{
                 System.out.println("\nIngrese el codigo del producto: ");
                 int codigo = Integer.parseInt(br.readLine());
-                INodo<IProducto> nodoProducto = UcuPharma.buscarPorCodigo(codigo);
-                System.out.println(nodoProducto.getDato());
+                IElementoAB<IProducto> nodoProducto = UcuPharma.buscarPorCodigo(codigo);
+                System.out.println(nodoProducto.getDatos());
                 System.out.println("\n\nProducto encontrado con éxito. Presione cualquier tecla para volver al menú.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
@@ -162,7 +167,8 @@ public class Main {
             case "9":{
                 System.out.println("\nIngrese la descripción corta a buscar: ");
                 String descripcion = br.readLine();
-                UcuPharma.buscarPorDescripcionCorta(descripcion);
+                Boolean tipoDesc = true;
+                UcuPharma.buscarPorDescripcion(descripcion, tipoDesc);
                 System.out.println("\n\nProducto encontrado con éxito. Presione cualquier tecla para volver al menú.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
@@ -171,7 +177,8 @@ public class Main {
             case "10":{
                 System.out.println("\nIngrese la descripción larga a buscar: ");
                 String descripcion = br.readLine();
-                UcuPharma.buscarPorDescripcionLarga(descripcion);
+                Boolean tipoDesc = false;
+                UcuPharma.buscarPorDescripcion(descripcion, tipoDesc);
                 System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
