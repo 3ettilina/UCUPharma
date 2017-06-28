@@ -2,6 +2,7 @@ package Interfaces;
 
 
 import java.util.LinkedList;
+import Interfaces.*;
 
 public interface IElementoAB<T> {
 
@@ -48,7 +49,7 @@ public interface IElementoAB<T> {
      */
     public IElementoAB buscar(Comparable unaEtiqueta);
 
- 
+    
 
     /**
      * Inserta un elemento dentro del arbol.

@@ -6,8 +6,12 @@
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Main.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/ManejadorArchivos.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Farmacia.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Lista.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Stock.java</file>
-            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Venta.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/Interfaces/IProducto.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/GestorDocumentos.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Producto.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Documento.java</file>
         </group>
     </open-files>
 </project-private>

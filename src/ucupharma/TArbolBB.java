@@ -1,8 +1,8 @@
 package ucupharma;
 
 
-import Interfaces.IElementoAB;
-import Interfaces.IArbolBB;
+import Exceptions.*;
+import Interfaces.*;
 import java.util.LinkedList;
 
 public class TArbolBB<T> implements IArbolBB<T> {
@@ -16,6 +16,10 @@ public class TArbolBB<T> implements IArbolBB<T> {
 
     public TArbolBB() {
         raiz = null;
+    }
+    
+    public IElementoAB<T> getRaiz(){
+        return this.raiz;
     }
 
     /**
@@ -43,6 +47,9 @@ public class TArbolBB<T> implements IArbolBB<T> {
             return raiz.buscar(unaEtiqueta);
         }
     }
+    
+
+    
 
     /**
      * @return recorrida en inorden del arbol, null en caso de ser vacío

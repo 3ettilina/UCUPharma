@@ -15,11 +15,15 @@ import java.util.Date;
  */
 public class Stock {
     
-    public IArbolBB<IProducto> arbolStock = new TArbolBB();
+    public IArbolBB<IProducto> arbolStock;
     
     public Stock(){
+        this.arbolStock = new TArbolBB();
     }
     
+    public IArbolBB<IProducto> getArbolProductos(){
+        return arbolStock;
+    }
     /**
      * Método ingresa cantidades a los productos existentes.
      * @param codigo - Código del producto a buscar.
@@ -69,6 +73,10 @@ public class Stock {
             System.out.println(ex.getMessage());
         }
         
+    }
+    
+    public void eliminarProducto(Comparable codigo){
+        arbolStock.eliminar(codigo);
     }
     
     /**
@@ -161,75 +169,90 @@ public class Stock {
     }
     
     /**
-     * Método que busca productos por su descripción corta.
+     * Método que busca productos por su descripción corta o larga.
      * @param descripcion - Cadena de texto que indica los caracteres a buscar en la descripción corta de los productos.
+     * @param tipoDescripcion - Indica si el usuario quiere buscar por descripcion corta o larga
      */
-    public void buscarPorDescripcionCorta(String descripcion){
-        int productosEncontrados = 0;
-        if (arbolStock == null){
-            System.out.println("No existen productos en el Stock. Por favor, verifique.");
-        }
-        else{
-            IElementoAB<IProducto> nodoPuntero = arbolStock;
-            while (nodoPuntero != null){
-                IProducto producto = nodoPuntero.getDatos();
-                if (producto.getDescripcionCorta().contains(descripcion)){
-                    System.out.println(producto);
-                    productosEncontrados += 1;
-                }
-                
-                nodoPuntero = nodoPuntero.getSiguiente();
+    public ILista<IElementoAB<IProducto>> buscarPorDesc(String desc, Boolean descCorta){
+        ILista<IElementoAB<IProducto>> listEncontrados = new Lista();
+        try {
+            IElementoAB<IProducto> raiz = arbolStock.getRaiz();
+            
+            if (raiz == null){
+                throw new NullTreeException("No existen productos en el Stock. Por favor, verifique.");
+            }
+            else{
+                return auxBuscarPorDesc(raiz, desc, descCorta, listEncontrados);
             }
             
-            if (productosEncontrados == 0){
-                System.out.println("No se encontraron productos que contengan esa descripción corta.");
-            }
-            
+        } catch (NullTreeException e) {
+            e.getMessage();
         }
+        return listEncontrados;
     }
     
-    /**
-     * Método que busca productos utilizando la descripción larga.
-     * @param descripcion - Cadena de caracteres a buscar.
-     */
-    public void buscarPorDescripcionLarga(String descripcion){
-        int productosEncontrados = 0;
-        if (listaStock.esVacia()){
-            System.out.println("No existen productos en el Stock. Por favor, verifique.");
-        }
-        else{
-            INodo<IProducto> nodoPuntero = listaStock.getPrimero();
-            while (nodoPuntero != null){
-                IProducto producto = nodoPuntero.getDato();
-                if (producto.getDescripcionLarga().contains(descripcion)){
-                    System.out.println(producto);
-                    productosEncontrados += 1;
-                }
-                
-                nodoPuntero = nodoPuntero.getSiguiente();
+    public ILista<IElementoAB<IProducto>> auxBuscarPorDesc(IElementoAB nodo, String desc, Boolean tDescCorta, ILista prodEncontrados){
+        IElementoAB<IProducto> elemRaiz = arbolStock.getRaiz();
+        IElementoAB<IProducto> hIzq = elemRaiz.getHijoIzq();
+        IElementoAB<IProducto> hDer = elemRaiz.getHijoDer();
+        IElementoAB<IProducto> elemProd = new TElementoAB(elemRaiz.getEtiqueta(), elemRaiz.getDatos());
+        if(tDescCorta){
+            IProducto prod = elemProd.getDatos();
+            if(desc.contains(prod.getDescripcionCorta())){
+                prodEncontrados.insertarOrdenado(new Nodo(elemProd.getEtiqueta(), elemProd.getDatos()));
             }
-            
-            if (productosEncontrados == 0){
-                System.out.println("No se encontraron productos que contengan esa descripción larga.");
+            if(hIzq != null){
+                return auxBuscarPorDesc(hIzq, desc, tDescCorta, prodEncontrados);
             }
-            
+            if(hDer != null){
+                return auxBuscarPorDesc(hDer, desc, tDescCorta, prodEncontrados);
+            }
         }
+        if (! tDescCorta){
+            IProducto prod = elemProd.getDatos();
+            if(desc.contains(prod.getDescripcionLarga())){
+                prodEncontrados.insertarOrdenado(new Nodo(elemProd.getEtiqueta(), elemProd.getDatos()));
+            }
+            if(hIzq != null){
+                return auxBuscarPorDesc(hIzq, desc, tDescCorta, prodEncontrados);
+            }
+            if(hDer != null){
+                return auxBuscarPorDesc(hDer, desc, tDescCorta, prodEncontrados);
+            }
+        }
+        return prodEncontrados;
     }
+    
     
     /**
      * Metodo que permite listar todos los productos en stock.
      */
     public void listarProductos(){
-        INodo<IProducto> nodoPuntero = listaStock.getPrimero();
-        if (listaStock.esVacia()){
+        IElementoAB<IProducto> raiz = arbolStock.getRaiz();
+        if (raiz == null){
             System.out.println("No existen productos en el stock.");
         }
-        while (nodoPuntero != null){
-            IProducto producto = nodoPuntero.getDato();
-            System.out.println(producto);
-            System.out.println("\n");
-            nodoPuntero = nodoPuntero.getSiguiente();
+        
+        else{
+            auxListarProductos(raiz);
         }
     }
+    
+    public void auxListarProductos(IElementoAB<IProducto> nodo){
+        IProducto producto = nodo.getDatos();
+        System.out.println(producto);
+        System.out.println("\n");
+        
+        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
+        IElementoAB<IProducto> hDer = nodo.getHijoDer();
+        if (hIzq != null){
+            auxListarProductos(hIzq);
+        }
+        if (hDer != null){
+            auxListarProductos(hDer);
+        }
+    }
+    
+    
     
 }

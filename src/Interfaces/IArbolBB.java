@@ -4,6 +4,12 @@ package Interfaces;
 import java.util.LinkedList;
 
 public interface IArbolBB<T> {
+    
+    /**
+     * Retorna la raiz del arbol
+     * @return raiz
+     */
+    public IElementoAB<T> getRaiz();
 
     /**
      * Inserta un elemento en el arbol. En caso de ya existir un elemento con la
@@ -28,6 +34,7 @@ public interface IArbolBB<T> {
     public IElementoAB<T> buscar(Comparable unaEtiqueta);
 
    
+    
        /**
      * Elimina un elemento dada una etiqueta.
      * @param unaEtiqueta 
