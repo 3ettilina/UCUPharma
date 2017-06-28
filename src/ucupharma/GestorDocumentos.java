@@ -34,15 +34,21 @@ public class GestorDocumentos {
             if (prodAVender.getCantidad() >= cantidad){
                 double total = (prodAVender.getPrecio())*cantidad;
                 Documento venta = new Documento(clave, cantidad, total);
-                IElementoAB<Documento> nodoVenta = new TElementoAB(ManejadorFechas.obtenerFecha(), venta);
+                IElementoAB<Documento> elemVenta = new TElementoAB(ManejadorFechas.obtenerFecha(), venta);
                 prodAVender.setCantidad(prodAVender.getCantidad()-cantidad);
                 
                 if(!listaDocumentos.esVacia()){
-                    INodo<IArbolBB<Documento>> buscar = listaDocumentos.buscar("Venta");
-                    if(buscar != null){
-                        buscar.getDato().insertar(nodoVenta);
-                        System.out.println("Venta realizada satisfactoriamente.");
+                    INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Venta");
+                    if(nodoVenta != null){
+                        nodoVenta.getDato().insertar(elemVenta);
+                        System.out.println("Venta realizada satisfactoriamente. El id de su compra es: " + venta.id + ". Lo precisará si desea realizar una devolución.");
                     }
+                }
+                else{
+                    IArbolBB<Documento> arbolVenta = new TArbolBB<>();
+                    arbolVenta.insertar(elemVenta);
+                    INodo<IArbolBB<Documento>> nodoArbolVenta = new Nodo("Venta", arbolVenta);
+                    listaDocumentos.insertar(nodoArbolVenta);
                 }
                 
             }
@@ -64,7 +70,8 @@ public class GestorDocumentos {
      * @param cantidad - Cantidad de unidades a devolver.
      */
     public void devolver(int numDocumento, int codigo, int cantidad){
-        INodo<Documento> nodoProductoEncontrado = listaVentas.buscar(numDocumento); //Se busca la fecha en los comparables de los Nodos<ItemVenta>
+        IElementoAB<IProducto> nodoProd = arbolStock.buscar(codigo);
+        INodo<Documento> nodoProductoEncontrado = listaDocumentos.buscar(numDocumento); //Se busca la fecha en los comparables de los Nodos<ItemVenta>
         if(nodoProductoEncontrado != null){ //Si se encuentra un Nodo que contenga esa fecha como comparable
             Documento ventaEncontrada = nodoProductoEncontrado.getDato(); //Se guarda en una variable el ItemVenta que contiene ese Nodo
             if (codigo == ventaEncontrada.getCodigoProd()){ //Si el código ingresado por parámetro es igual al código del producto encontrado en esa venta.

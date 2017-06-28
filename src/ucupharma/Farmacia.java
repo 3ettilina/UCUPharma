@@ -20,7 +20,7 @@ public class Farmacia {
     public Farmacia(String nombre){
         this.nombre = nombre;
         this.stock = new Stock();
-        this.documentos = new GestorDocumentos(IArbolBB<IProducto> arbol = stock.arbolStock);
+        this.documentos = new GestorDocumentos();
     }
     
     /**
