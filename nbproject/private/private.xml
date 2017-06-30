@@ -4,11 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Main.java</file>
-            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/ManejadorArchivos.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/TElementoAB.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Farmacia.java</file>
-            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Lista.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/Interfaces/ILista.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Stock.java</file>
-            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/Interfaces/IProducto.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/TArbolBB.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/Interfaces/IArbolBB.java</file>
+            <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/Interfaces/IElementoAB.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/GestorDocumentos.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Producto.java</file>
             <file>file:/C:/UCUDAL/TERCER-SEMESTRE/ALGORITMOS/PROYECTOS/UCUPharma/src/ucupharma/Documento.java</file>
