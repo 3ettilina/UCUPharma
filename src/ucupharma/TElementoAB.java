@@ -7,10 +7,10 @@ import java.util.LinkedList;
 
 public class TElementoAB<T> implements IElementoAB<T> {
 
-    private Comparable etiqueta;
+    private final Comparable etiqueta;
     private IElementoAB hijoIzq;
     private IElementoAB hijoDer;
-    private T datos;
+    private final T datos;
 
     /**
      * @param unaEtiqueta
@@ -22,10 +22,12 @@ public class TElementoAB<T> implements IElementoAB<T> {
         datos = unosDatos;
     }
 
+    @Override
     public IElementoAB getHijoIzq() {
         return hijoIzq;
     }
 
+    @Override
     public IElementoAB getHijoDer() {
         return hijoDer;
     }
@@ -35,6 +37,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
      * @return
      */
     @SuppressWarnings("unchecked")
+    @Override
     public boolean insertar(IElementoAB unElemento) {
         if (unElemento.getEtiqueta().compareTo(etiqueta) < 0) {
             if (hijoIzq != null) {
@@ -60,6 +63,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
      * @param unaEtiqueta
      * @return
      */
+    @Override
     public IElementoAB buscar(Comparable unaEtiqueta) {
 
         if (unaEtiqueta.equals(etiqueta)) {
@@ -76,7 +80,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
             return null;
         }
     }
-    
+   
     
     
 

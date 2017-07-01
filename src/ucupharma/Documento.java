@@ -13,8 +13,9 @@ import Interfaces.IDocumento;
  */
 public class Documento implements IDocumento{
     
-    public Date fechaVenta;
+    public Date fechaDocumento;
     public Date fechaModificacion;
+    public int tipoDocumento;
     public static int ultimoId = 1;
     public Comparable id;
     public int codigoProducto;
@@ -29,12 +30,14 @@ public class Documento implements IDocumento{
      * @param codProducto
      * @param cantidad
      * @param total 
+     * @param tipo_documento 
+     * @param nroDoc 
      */
-    public Documento(int codProducto, int cantidad, double total){
-        this.fechaVenta = ManejadorFechas.obtenerFecha();
+    public Documento(int codProducto, int cantidad, double total, int tipo_documento, int nroDoc){
+        this.fechaDocumento = ManejadorFechas.obtenerFecha();
         this.fechaModificacion = ManejadorFechas.obtenerFecha();
-        this.id = Documento.ultimoId;
-        Documento.ultimoId += 1;
+        this.tipoDocumento = tipo_documento;
+        setNroDocumento(nroDoc);
         this.codigoProducto = codProducto;
         this.cantidad = cantidad;
         this.total = total;
@@ -44,9 +47,21 @@ public class Documento implements IDocumento{
     @Override
     public String toString(){
         String imprimir = "Id venta: " + this.id + ". Codigo Producto: "+ this.codigoProducto + ". Cantidad: " + this.cantidad + ". Total: " + this.total;
-        imprimir += ". Fecha venta: " + this.fechaVenta + "Fecha Modificación: " + this.fechaModificacion;
+        imprimir += ". Fecha venta: " + this.fechaDocumento + "Fecha Modificación: " + this.fechaModificacion;
         return imprimir;
     }
+    
+    
+    private void setNroDocumento(int nroDoc){
+        if(this.tipoDocumento == 1){
+            this.id = ultimoId + 1;
+            ultimoId += 1;
+        }
+        else{
+            this.id = nroDoc;
+        }
+    }
+    
     
     @Override
     public int getCodigoProd(){
@@ -65,7 +80,7 @@ public class Documento implements IDocumento{
     
     @Override
     public Date getFechaVenta(){
-        return this.fechaVenta;
+        return this.fechaDocumento;
     }
     
     @Override

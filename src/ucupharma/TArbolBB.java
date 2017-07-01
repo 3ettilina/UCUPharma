@@ -18,6 +18,7 @@ public class TArbolBB<T> implements IArbolBB<T> {
         raiz = null;
     }
     
+    @Override
     public IElementoAB<T> getRaiz(){
         return this.raiz;
     }
@@ -26,6 +27,7 @@ public class TArbolBB<T> implements IArbolBB<T> {
      * @param unElemento
      * @return
      */
+    @Override
     public boolean insertar(IElementoAB<T> unElemento) {
         if (esVacio()) {
             raiz = unElemento;
@@ -40,6 +42,7 @@ public class TArbolBB<T> implements IArbolBB<T> {
      * @return
      */
     @SuppressWarnings("unchecked")
+    @Override
     public IElementoAB<T> buscar(Comparable unaEtiqueta) {
         if (esVacio()) {
             return null;
@@ -54,6 +57,7 @@ public class TArbolBB<T> implements IArbolBB<T> {
     /**
      * @return recorrida en inorden del arbol, null en caso de ser vacío
      */
+    @Override
     public String inOrden() {
         if (esVacio()) {
             return null;
