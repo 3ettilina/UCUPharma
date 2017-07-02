@@ -6,6 +6,7 @@
 package ucupharma;
 
 import Interfaces.*;
+import Exceptions.*;
 import java.util.Date;
 
 /**
@@ -37,7 +38,7 @@ public class GestorDocumentos {
     
     /**
      * Método para generar una venta.
-     * @param clave - Clave del producto a vender.
+     * @param codigo - Clave del producto a vender.
      * @param cantidad - Cantidad de unidades a vender.
      */
     public void vender(int codigo, int cantidad){
@@ -112,12 +113,12 @@ public class GestorDocumentos {
         IElementoAB<IProducto> nodoProd = arbolStock.buscar(codigo);
         if (nodoProd != null){
             IProducto prodAComprar = nodoProd.getDatos();
-            if (prodAComprar.getCantidad() >= cantidad){
+            if (cantidad >= 0){
                 double total = (prodAComprar.getPrecio())*cantidad;
                 Documento venta = new Documento(codigo, cantidad, total, 1, 0);
                 
                 IElementoAB<Documento> elemVenta = new TElementoAB(venta.getId(), venta);
-                prodAVender.setCantidad(prodAVender.getCantidad()-cantidad);
+                prodAComprar.setCantidad(prodAComprar.getCantidad()+cantidad);
                 
                 INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Venta");
                 nodoVenta.getDato().insertar(elemVenta);
@@ -125,46 +126,69 @@ public class GestorDocumentos {
   
             }
             else{
-                System.out.println("La cantidad a vender " + cantidad + " es mayor a la cantidad de items en stock " + prodAVender.getCantidad() + ". Por favor, intentelo nuevamente con la cantidad correcta.");
+                System.out.println("La cantidad a comprar: " + cantidad + " es menor o igual a cero. Por favor, intentelo nuevamente con la cantidad correcta.");
                 
             }
         }
         else{
-            System.out.println("El código ingresado no fue encontrado en la base de datos de productos, por favor, verifique.");
+            System.out.println("El código ingresado no fue encontrado en la base de datos de productos. ¿Desea ingresarlo?");
             
         }
     }
     
+    public ILista<IElementoAB<Documento>> reporte(String fecha_desde, String fecha_hasta){
+        Date fechaDesde = ManejadorFechas.crearFecha(fecha_desde);
+        Date fechaHasta = ManejadorFechas.crearFecha(fecha_hasta);
+        
+        INodo<IArbolBB<Documento>> nodoListaDoc = listaDocumentos.buscar("Venta");
+        IArbolBB<Documento> arbolVenta = nodoListaDoc.getDato();
+        IElementoAB<Documento> nodoVenta = arbolVenta.getRaiz();
+        
+        ILista<IElementoAB<Documento>> ventasEncontradas = new Lista<>();
+        
+        try{
+            if(nodoVenta != null){
+                return auxReporte(nodoVenta, fechaDesde, fechaHasta, ventasEncontradas);
+            }
+            else{
+                throw new NullTreeException("No existe ninguna venta realizada hasta el momento. Por favor, intentelo más tarde.");
+            }
+        }
+        catch (NullTreeException ex){
+            ex.getMessage();
+        }
+        return ventasEncontradas;
+    }
+    
+    
     /**
      * Método que devuelve un reporte de ventas utilizando un rango de fechas.
+     * @param nodoVenta
      * @param fecha_desde - Fecha anterior desde donde se comienza la búsqueda.
      * @param fecha_hasta - Fecha más reciente hasta donde se busca.
+     * @param ventasEncontradas
+     * @return lista de ventas encontradas en el rango de fechas indicado.
      */
-    public void reporte(String fecha_desde, String fecha_hasta){
-        Date fechaDesde = ManejadorFechas.obtenerFecha();
-        Date fechaHasta = ManejadorFechas.obtenerFecha();
-        
-        int cantidadTotal = 0;
-        double precioTotal = 0.0;
-        
-        INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar(fechaDesde);
-        if (nodoVenta != null){
-            while (nodoVenta.getSiguiente() != null){
-                Documento venta = nodoVenta.getDatos();
-                if (venta.getFechaVenta().after(fechaDesde) && venta.getFechaVenta().before(fechaHasta)){
-                    cantidadTotal += venta.cantidad;
-                    precioTotal += venta.total;
-                    System.out.println(venta);
-                }
-                nodoVenta = nodoVenta.getSiguiente();
-            }
-            
-            System.out.println("Entre " + fechaDesde + " y " + fechaHasta + " se han vendido: ");
-            System.out.println("Cantidad de productos: " + cantidadTotal);
-            System.out.println("Valor total: " + precioTotal);
+    public ILista<IElementoAB<Documento>> auxReporte(IElementoAB nodoVenta, Date fecha_desde, Date fecha_hasta, ILista ventasEncontradas){
+        IElementoAB<Documento> hIzq = nodoVenta.getHijoIzq();
+        IElementoAB<Documento> hDer = nodoVenta.getHijoDer();
+        IElementoAB<Documento> elemVenta = new TElementoAB(nodoVenta.getEtiqueta(), nodoVenta);
+        Documento venta = elemVenta.getDatos();
+        Date fechaVenta = venta.getFechaVenta();
+        if(fechaVenta.compareTo(fecha_desde) >= 0 && fechaVenta.compareTo(fecha_hasta) <= 0){
+            ventasEncontradas.insertar(new Nodo(elemVenta.getEtiqueta(), elemVenta.getDatos()));
         }
-        else{
-            System.out.println("No se han encontrado ventas en las fechas indicadas.");
+        if(hIzq != null){
+            return auxReporte(hIzq, fecha_desde, fecha_hasta, ventasEncontradas);
         }
+        if(hDer != null){
+            return auxReporte(hDer, fecha_desde, fecha_hasta, ventasEncontradas);
+        }
+        
+        return ventasEncontradas;
     }
+    
+    
+    
+    
 }

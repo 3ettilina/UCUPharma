@@ -171,9 +171,10 @@ public class Stock {
     /**
      * Método que busca productos por su descripción corta o larga.
      * @param descripcion - Cadena de texto que indica los caracteres a buscar en la descripción corta de los productos.
-     * @param tipoDescripcion - Indica si el usuario quiere buscar por descripcion corta o larga
+     * @param descCorta - Indica si el usuario quiere buscar por descripcion corta o larga
+     * @return Elementos encontrados
      */
-    public ILista<IElementoAB<IProducto>> buscarPorDesc(String desc, Boolean descCorta){
+    public ILista<IElementoAB<IProducto>> buscarPorDesc(String descripcion, Boolean descCorta){
         ILista<IElementoAB<IProducto>> listEncontrados = new Lista();
         try {
             IElementoAB<IProducto> raiz = arbolStock.getRaiz();
@@ -182,7 +183,7 @@ public class Stock {
                 throw new NullTreeException("No existen productos en el Stock. Por favor, verifique.");
             }
             else{
-                return auxBuscarPorDesc(raiz, desc, descCorta, listEncontrados);
+                return auxBuscarPorDesc(raiz, descripcion, descCorta, listEncontrados);
             }
             
         } catch (NullTreeException e) {
@@ -192,10 +193,9 @@ public class Stock {
     }
     
     public ILista<IElementoAB<IProducto>> auxBuscarPorDesc(IElementoAB nodo, String desc, Boolean tDescCorta, ILista prodEncontrados){
-        IElementoAB<IProducto> elemRaiz = arbolStock.getRaiz();
-        IElementoAB<IProducto> hIzq = elemRaiz.getHijoIzq();
-        IElementoAB<IProducto> hDer = elemRaiz.getHijoDer();
-        IElementoAB<IProducto> elemProd = new TElementoAB(elemRaiz.getEtiqueta(), elemRaiz.getDatos());
+        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
+        IElementoAB<IProducto> hDer = nodo.getHijoDer();
+        IElementoAB<IProducto> elemProd = new TElementoAB(nodo.getEtiqueta(), nodo.getDatos());
         if(tDescCorta){
             IProducto prod = elemProd.getDatos();
             if(desc.contains(prod.getDescripcionCorta())){
