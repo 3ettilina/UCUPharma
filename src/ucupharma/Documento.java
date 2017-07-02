@@ -31,6 +31,7 @@ public class Documento implements IDocumento{
      * Metodo constructor de un objeto Venta
      * @param codProducto
      * @param descCorta
+     * @param areaAp
      * @param cantidad
      * @param total 
      * @param tipo_documento 
