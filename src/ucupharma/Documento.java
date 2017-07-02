@@ -16,7 +16,7 @@ public class Documento implements IDocumento{
     public Date fechaDocumento;
     public Date fechaModificacion;
     public int tipoDocumento;
-    public static int ultimoId = 1;
+    public static int ultimoId = 0;
     public Comparable id;
     public int codigoProducto;
     public String descripcionCorta;

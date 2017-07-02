@@ -23,8 +23,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
         Farmacia UcuPharma = new Farmacia("UcuPharma");
-        UCUPharmaMainForm form = new UCUPharmaMainForm();
-        //home(UcuPharma);
+        home(UcuPharma);
     }
         /**
          * Menu principal
@@ -53,8 +52,7 @@ public class Main {
         switch(opcion){
             
             case "1":{
-                System.out.println("\nIngrese la ruta del archivo: ");
-                String ruta = br.readLine();
+                String ruta = "C:\\farmacia_articles_big.csv";
                 System.out.println("Ingrese SI, si desea modificar los productos existentes. De lo contrario ingrese NO");
                 String modificar = br.readLine();
                 UcuPharma.cargarProductos(ruta, modificar);
@@ -90,16 +88,15 @@ public class Main {
                 IProducto nProducto = new Producto(codigo, fechaCreacion, fechaModificacion, precio, descCorta, descLarga, estado, refrigerado, reqReceta, fechaVenc, area, 0);
                 IElementoAB<IProducto> nodoProducto = new TElementoAB(codigo, nProducto);
                 UcuPharma.stock.arbolStock.insertar(nodoProducto);
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
             }
             case "3":{
-                System.out.println("\nIngrese la ruta del archivo: ");
-                String ruta = br.readLine();
+                String ruta = "C:\\farmacia_stock_big.csv";
                 UcuPharma.cargarStock(ruta);
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -111,7 +108,7 @@ public class Main {
                 System.out.println("\nIngrese la cantidad de unidades a agregar:");
                 int cant = Integer.parseInt(br.readLine());
                 UcuPharma.altaStock(codigo,cant);
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -123,7 +120,7 @@ public class Main {
                 System.out.println("\nIngrese la cantidad de unidades a quitar (unidades positivas):");
                 int cant = Integer.parseInt(br.readLine());
                 UcuPharma.bajaStock(codigo,cant);
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -135,7 +132,7 @@ public class Main {
                 System.out.println("\nIngrese la cantidad a vender: ");
                 int cant = Integer.parseInt(br.readLine());
                 UcuPharma.vender(codigo, cant);
-                System.out.println("\n\nProducto vendido con éxito. Presione cualquier tecla para volver al menu.");
+                System.out.println("\n\nPresione cualquier tecla para volver al menu.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -148,7 +145,7 @@ public class Main {
                 System.out.println("\nIngrese la cantidad a devolver: ");
                 int cant = Integer.parseInt(br.readLine());
                 UcuPharma.devolver(id, codigo, cant);
-                System.out.println("\n\nProducto devuelto con éxito. Presione cualquier tecla para volver al menu.");
+                System.out.println("\n\nPresione cualquier tecla para volver al menu.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -159,7 +156,7 @@ public class Main {
                 int codigo = Integer.parseInt(br.readLine());
                 IElementoAB<IProducto> nodoProducto = UcuPharma.buscarPorCodigo(codigo);
                 System.out.println(nodoProducto.getDatos());
-                System.out.println("\n\nProducto encontrado con éxito. Presione cualquier tecla para volver al menú.");
+                System.out.println("\n\nPresione cualquier tecla para volver al menú.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -169,7 +166,7 @@ public class Main {
                 String descripcion = br.readLine();
                 Boolean tipoDesc = true;
                 UcuPharma.buscarPorDescripcion(descripcion, tipoDesc);
-                System.out.println("\n\nProducto encontrado con éxito. Presione cualquier tecla para volver al menú.");
+                System.out.println("\n\nPresione cualquier tecla para volver al menú.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -179,14 +176,14 @@ public class Main {
                 String descripcion = br.readLine();
                 Boolean tipoDesc = false;
                 UcuPharma.buscarPorDescripcion(descripcion, tipoDesc);
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;
             }
             case "11":{
                 UcuPharma.listarProductos();
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char pausa = (char) System.in.read();
                 home(UcuPharma);
                 break;
@@ -199,7 +196,7 @@ public class Main {
                 System.out.println("\nIngrese la cantidad a devolver: ");
                 int cant = Integer.parseInt(br.readLine());
                 UcuPharma.devolver(id, codigo, cant);
-                System.out.println("\n\nProducto ingresado con éxito. Presione cualquier tecla para continuar.");
+                System.out.println("\n\nPresione cualquier tecla para continuar.");
                 char stop = (char) System.in.read();
                 home(UcuPharma);
                 break;

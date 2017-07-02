@@ -6,6 +6,8 @@
 package ucupharma;
 import Interfaces.*;
 import Exceptions.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 
@@ -86,50 +88,59 @@ public class Stock {
      * A excepción de las cantidades.
      */
     public void cargarProductos(String rutaArchivo, String modificar){
-        
-        if("SI".equals(modificar.toUpperCase()) || "NO".equals(modificar.toUpperCase())){
-            String[] productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
-            for (int i = 1; i < productosLeidos.length; i++) {
-                String[] unProducto = productosLeidos[i].split(";");
-                int codigoProducto = Integer.parseInt(unProducto[0]);
-                IElementoAB<IProducto> nodoProductoEncontrado = arbolStock.buscar(codigoProducto);
-                if (nodoProductoEncontrado != null){
-                    IProducto prodEncontrado = nodoProductoEncontrado.getDatos();
-                    if ("SI".equals(modificar.toUpperCase())){
-                        prodEncontrado.setUltimaActualizacion(ManejadorFechas.obtenerFecha());
-                        prodEncontrado.setPrecio(Double.parseDouble(unProducto[3]));
-                        prodEncontrado.setDescCorta(unProducto[4]);
-                        prodEncontrado.setDescLarga(unProducto[5]);
-                        prodEncontrado.setEstado(unProducto[6]);
-                        prodEncontrado.setRefrigerado(Boolean.parseBoolean(unProducto[7]));
-                        prodEncontrado.setRequiereReceta(Boolean.parseBoolean(unProducto[8]));
-                        prodEncontrado.setVencimiento(Integer.parseInt(unProducto[9]));
+        try{
+            if("SI".equals(modificar.toUpperCase()) || "NO".equals(modificar.toUpperCase())){
+                ArrayList<String> productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
+                productosLeidos.remove(0);
+                Collections.shuffle(productosLeidos);
+                for (int i = 0; i < productosLeidos.size(); i++) {
+                    String[] unProducto = productosLeidos.get(i).split(";");
+                    int codigoProducto = Integer.parseInt(unProducto[0]);
+                    IElementoAB<IProducto> nodoProductoEncontrado = arbolStock.buscar(codigoProducto);
+                    if (nodoProductoEncontrado != null){
+                        IProducto prodEncontrado = nodoProductoEncontrado.getDatos();
+                        if ("SI".equals(modificar.toUpperCase())){
+                            prodEncontrado.setUltimaActualizacion(ManejadorFechas.obtenerFecha());
+                            prodEncontrado.setPrecio(Double.parseDouble(unProducto[3]));
+                            prodEncontrado.setDescCorta(unProducto[4]);
+                            prodEncontrado.setDescLarga(unProducto[5]);
+                            prodEncontrado.setEstado(unProducto[6]);
+                            prodEncontrado.setRefrigerado(Boolean.parseBoolean(unProducto[7]));
+                            prodEncontrado.setRequiereReceta(Boolean.parseBoolean(unProducto[8]));
+                            prodEncontrado.setVencimiento(Integer.parseInt(unProducto[9]));
+                            prodEncontrado.setAreaAplicacion(unProducto[10]);
+                            prodEncontrado.setCantidad(0);
+                        }
+                    }
+                    else{
+                        int codigo = Integer.parseInt(unProducto[0]);
+                        Date fecha_creacion = ManejadorFechas.crearFecha(unProducto[1]);
+                        Date ult_actualizacion = ManejadorFechas.crearFecha(unProducto[2]);
+                        double precio = Double.parseDouble(unProducto[3]);
+                        String descCorta = unProducto[4];
+                        String descLarga = unProducto[5];
+                        String estado = unProducto[6];
+                        boolean refrigerado = Boolean.parseBoolean(unProducto[7]);
+                        boolean receta = Boolean.parseBoolean(unProducto[8]);
+                        int vencimiento = Integer.parseInt(unProducto[9]);
+                        String areaAplicacion = unProducto[10];
+                        int cantidad = 0;
+
+                        IProducto productoNuevo = new Producto(codigo, fecha_creacion, ult_actualizacion, precio, descCorta, descLarga, estado, refrigerado, receta, vencimiento, areaAplicacion, cantidad);
+                        IElementoAB<IProducto> productoAIngresar = new TElementoAB(codigo, productoNuevo);
+                        arbolStock.insertar(productoAIngresar);
                     }
                 }
-                else{
-                    int codigo = Integer.parseInt(unProducto[0]);
-                    Date fecha_creacion = ManejadorFechas.crearFecha(unProducto[1]);
-                    Date ult_actualizacion = ManejadorFechas.crearFecha(unProducto[2]);
-                    double precio = Double.parseDouble(unProducto[3]);
-                    String descCorta = unProducto[4];
-                    String descLarga = unProducto[5];
-                    String estado = unProducto[6];
-                    boolean refrigerado = Boolean.parseBoolean(unProducto[7]);
-                    boolean receta = Boolean.parseBoolean(unProducto[8]);
-                    int vencimiento = Integer.parseInt(unProducto[9]);
-                    String areaAplicacion = unProducto[10];
-                    int cantidad = 0;
-                    
-                    IProducto productoNuevo = new Producto(codigo, fecha_creacion, ult_actualizacion, precio, descCorta, descLarga, estado, refrigerado, receta, vencimiento, areaAplicacion, cantidad);
-                    IElementoAB<IProducto> productoAIngresar = new TElementoAB(codigo, productoNuevo);
-                    arbolStock.insertar(productoAIngresar);
-                }
+            }
+            else{
+                System.out.println("No ha especificado si desea ('SI') o no ('NO') modificar los productos existentes. Por favor, verifique");
+
             }
         }
-        else{
-            System.out.println("No ha especificado si desea ('SI') o no ('NO') modificar los productos existentes. Por favor, verifique");
-
+        catch(Exception ex){
+            
         }
+        
     }
     
     /**
@@ -138,22 +149,23 @@ public class Stock {
      */
     public void cargarStock(String rutaArchivo){
         try {
-            String[] productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
-            for (int i = 1; i < productosLeidos.length; i++) {
-                String[] unProducto = productosLeidos[i].split(";");
-                Comparable codigo = unProducto[0];
+            ArrayList<String> productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
+            productosLeidos.remove(0);
+            Collections.shuffle(productosLeidos);
+            for (int i = 0; i < productosLeidos.size(); i++) {
+                String[] unProducto = productosLeidos.get(i).split(";");
+                int codigo = Integer.parseInt(unProducto[0]);
                 int cant = Integer.parseInt(unProducto[1]);
                 IElementoAB<IProducto> nodoProductoEncontrado = arbolStock.buscar(codigo);
                 if(nodoProductoEncontrado != null){
-                    IProducto prodEncontrado = nodoProductoEncontrado.getDatos();
-                    prodEncontrado.setCantidad(prodEncontrado.getCantidad() + cant);
-                    prodEncontrado.setUltimaActualizacion(ManejadorFechas.obtenerFecha());
+                    int cantAct = nodoProductoEncontrado.getDatos().getCantidad();
+                    nodoProductoEncontrado.getDatos().setCantidad(cantAct + cant);
                 }
                 else{
-                    throw new IdNotFoundException("El producto: " + codigo + " no existe en el stock. Por favor, verifique.");
+                    System.out.println("El producto: " + codigo + " no existe en la Farmacia. El stock del mismo no será cargado.");
                 }
             }
-        } catch (IdNotFoundException ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         

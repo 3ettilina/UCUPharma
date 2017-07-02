@@ -45,6 +45,8 @@ public class Producto implements IProducto {
      * @param estado
      * @param refrigerado
      * @param receta 
+     * @param vencimiento 
+     * @param area_de_aplicacion 
      * @param cantidad 
      */
     public Producto(int codigo, Date creacion, Date actualizacion, double precio, String desc_corta, String desc_larga, String estado, boolean refrigerado, boolean receta, int vencimiento, String area_de_aplicacion, int cantidad){
@@ -65,8 +67,8 @@ public class Producto implements IProducto {
     
     @Override
     public String toString(){
-        String imprimir = "Código: " + this.id + ". Descripcion: " + this.descripcion_corta + ". Cantidad: " + this.cantidad + ". Precio: "+ this.precio + ". \n Estado: " + this.estado;
-        imprimir += ". Refrigerado: "+ this.refrigerado + ". Requiere receta: " + this.receta + ". Fecha creación: " + this.fecha_creacion + ". Ultima actualización: " + this.ultima_actualizacion + ". Vencimiento: ";
+        String imprimir = "Código: " + this.id + ". Descripcion: " + this.descripcion_corta + ". Cantidad: " + this.cantidad + ". Precio: "+ this.precio + ". Area de Aplicación: " + this.areaAplicacion + ". \n Estado: " + this.estado;
+        imprimir += ". Refrigerado: "+ this.refrigerado + ". Requiere receta: " + this.receta + ". Fecha creación: " + this.fecha_creacion + ". Ultima actualización: " + this.ultima_actualizacion + ". Vencimiento: " + this.vencimiento;
         return imprimir;
     }
     

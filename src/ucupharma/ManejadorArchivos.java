@@ -7,10 +7,11 @@ package ucupharma;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -44,12 +45,13 @@ public class ManejadorArchivos {
         }
     }
 
-    public static String[] leerArchivo(String nombreCompletoArchivo) {
-        FileReader fr;
+    public static ArrayList<String> leerArchivo(String nombreCompletoArchivo) {
+        FileInputStream fr;
         ArrayList<String> listaLineasArchivo = new ArrayList<>();
         try {
-            fr = new FileReader(nombreCompletoArchivo);
-            BufferedReader br = new BufferedReader(fr);
+            fr = new FileInputStream(nombreCompletoArchivo);
+            InputStreamReader fich = new InputStreamReader(fr, "UTF-8");
+            BufferedReader br = new BufferedReader(fich);
             String lineaActual = br.readLine();
             while (lineaActual != null) {
                     listaLineasArchivo.add(lineaActual);
@@ -68,6 +70,6 @@ public class ManejadorArchivos {
         }
         System.out.println("Archivo leido satisfactoriamente");
 
-        return listaLineasArchivo.toArray(new String[0]);
+        return listaLineasArchivo;
     }
 }
