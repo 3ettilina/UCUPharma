@@ -26,7 +26,7 @@ public class Main {
         Farmacia UcuPharma = new Farmacia("UcuPharma");
         
         UCUPharmaMainForm mainForm = new UCUPharmaMainForm(UcuPharma);
-        mainForm.setSize(800, 600);
+        mainForm.setSize(1000, 700);
         mainForm.setVisible(true);
         
         UcuPharma.cargarStock("C:\\farmacia_stock_big.csv");

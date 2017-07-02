@@ -134,7 +134,8 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void menuBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBuscarActionPerformed
-        
+        Busqueda formBusquedaProd = new Busqueda(ucus);
+        formBusquedaProd.setVisible(true);
     }//GEN-LAST:event_menuBuscarActionPerformed
 
     /**

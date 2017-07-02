@@ -173,7 +173,7 @@ public class Stock {
      * @param clave - código del producto a buscar.
      * @return - Devuelve un producto encontrado.
      */
-    public IElementoAB<IProducto> buscarPorCodigo(Comparable clave){
+    public IElementoAB<IProducto> buscarPorCodigo(int clave){
         return arbolStock.buscar(clave);
     }
     

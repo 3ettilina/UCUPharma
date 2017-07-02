@@ -91,7 +91,7 @@ public class Farmacia {
      * @param codigo - código del producto a buscar.
      * @return 
      */
-    public IElementoAB<IProducto> buscarPorCodigo(Comparable codigo){
+    public IElementoAB<IProducto> buscarPorCodigo(int codigo){
         return stock.buscarPorCodigo(codigo);
     }
     
