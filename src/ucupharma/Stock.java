@@ -133,12 +133,12 @@ public class Stock {
                 }
             }
             else{
-                System.out.println("No ha especificado si desea ('SI') o no ('NO') modificar los productos existentes. Por favor, verifique");
+                ;
 
             }
         }
         catch(Exception ex){
-            
+            ex.getMessage();
         }
         
     }
@@ -160,9 +160,6 @@ public class Stock {
                 if(nodoProductoEncontrado != null){
                     int cantAct = nodoProductoEncontrado.getDatos().getCantidad();
                     nodoProductoEncontrado.getDatos().setCantidad(cantAct + cant);
-                }
-                else{
-                    System.out.println("El producto: " + codigo + " no existe en la Farmacia. El stock del mismo no será cargado.");
                 }
             }
         } catch (Exception ex) {
@@ -386,4 +383,5 @@ public class Stock {
             auxEliminarArea(area, hDer);
         }
     }
+    
 }

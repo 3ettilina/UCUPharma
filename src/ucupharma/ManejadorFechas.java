@@ -39,4 +39,10 @@ public class ManejadorFechas {
         cal.setTime(fechaLarga);
         return String.valueOf(cal.get(Calendar.MONTH));
     }
+    
+    public static String obtenerAño(Date fechaLarga){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fechaLarga);
+        return String.valueOf(cal.get(Calendar.YEAR));
+    }
 }
