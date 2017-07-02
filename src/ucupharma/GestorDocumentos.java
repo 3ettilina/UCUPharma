@@ -188,7 +188,44 @@ public class GestorDocumentos {
         return ventasEncontradas;
     }
     
+    public ILista<IElementoAB<Documento>> reporteVentasPorProd(int codigo){
+        INodo<IArbolBB<Documento>> nodoArbolVentas = listaDocumentos.buscar("Venta");
+        IArbolBB<Documento> arbolVentas = nodoArbolVentas.getDato();
+        IElementoAB<Documento> elemVenta = arbolVentas.getRaiz();
+        ILista<IElementoAB<Documento>> ventasProd = new Lista<>();
+        try{
+            if(elemVenta != null){
+                auxReporteVentasPorProd(codigo, elemVenta, ventasProd);
+            }
+            else{
+                throw new NullTreeException("No existen ventas de ningún producto registradas hasta el momento.");
+            }
+        }
+        catch(NullTreeException ex){
+            ex.getMessage();
+        }
+        
+        return ventasProd;
+    }
     
+    public ILista<IElementoAB<Documento>> auxReporteVentasPorProd(int codigo, IElementoAB elemVenta, ILista ventas){
+        IElementoAB<Documento> hIzq = elemVenta.getHijoIzq();
+        IElementoAB<Documento> hDer = elemVenta.getHijoDer();
+        IElementoAB<Documento> nodoActual = new TElementoAB(elemVenta.getEtiqueta(), elemVenta.getDatos());
+        Documento venta = nodoActual.getDatos();
+        int prodEnVenta = venta.getCodigoProd();
+        
+        if(prodEnVenta == codigo){
+            ventas.insertar(new Nodo(nodoActual.getEtiqueta(), nodoActual.getDatos()));
+        }
+        if(hIzq != null){
+            return auxReporteVentasPorProd(codigo, hIzq, ventas);
+        }
+        if(hDer != null){
+            return auxReporteVentasPorProd(codigo, hDer, ventas);
+        }
+        return ventas;
+    }
     
     
 }
