@@ -85,7 +85,7 @@ public class Documento implements IDocumento{
     }
     
     @Override
-    public Date getFechaVenta(){
+    public Date getFechaDocumento(){
         return this.fechaDocumento;
     }
     

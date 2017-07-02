@@ -174,7 +174,7 @@ public class GestorDocumentos {
         IElementoAB<Documento> hDer = nodoVenta.getHijoDer();
         IElementoAB<Documento> elemVenta = new TElementoAB(nodoVenta.getEtiqueta(), nodoVenta);
         Documento venta = elemVenta.getDatos();
-        Date fechaVenta = venta.getFechaVenta();
+        Date fechaVenta = venta.getFechaDocumento();
         if(fechaVenta.compareTo(fecha_desde) >= 0 && fechaVenta.compareTo(fecha_hasta) <= 0){
             ventasEncontradas.insertar(new Nodo(elemVenta.getEtiqueta(), elemVenta.getDatos()));
         }
@@ -195,7 +195,7 @@ public class GestorDocumentos {
         ILista<IElementoAB<Documento>> ventasProd = new Lista<>();
         try{
             if(elemVenta != null){
-                auxReporteVentasPorProd(codigo, elemVenta, ventasProd);
+                return auxReporteVentasPorProd(codigo, elemVenta, ventasProd);
             }
             else{
                 throw new NullNodeException("No existen ventas de ningún producto registradas hasta el momento.");
@@ -237,10 +237,10 @@ public class GestorDocumentos {
         
         try{
             if(nodoVenta != null){
-                auxMovimientosPorArea(area, nodoVenta, listaDocsArea);
+                return auxMovimientosPorArea(area, nodoVenta, listaDocsArea);
             }
             if(nodoCompra != null){
-               auxMovimientosPorArea(area, nodoCompra, listaDocsArea);
+               return auxMovimientosPorArea(area, nodoCompra, listaDocsArea);
 
             }
             if((nodoVenta == null) && (nodoCompra == null)){
@@ -269,5 +269,59 @@ public class GestorDocumentos {
             return auxMovimientosPorArea(areaAp, nodo, listaDocsArea);
         }
         return listaDocsArea;
+    }
+    
+    public Double promedioVentas(int codigo){
+        IArbolBB<Documento> arbolVenta = listaDocumentos.buscar("Venta").getDato();
+        IElementoAB<Documento> nodoVenta = arbolVenta.getRaiz();
+        ILista<String> meses = new Lista<>();
+        int cantMeses = meses.cantElementos();
+        double total = 0.0;
+        double promedio = 0.0;
+        try{
+            if(nodoVenta != null){
+                return auxPromedioVentas(codigo, nodoVenta, total, cantMeses, meses, promedio);
+            }
+            else{
+                throw new NullNodeException("No hay ventas realizadas.");
+            }
+        }
+        catch(NullNodeException ex){
+            ex.getMessage();
+        }
+        return promedio;
+    }
+    
+    public Double auxPromedioVentas(int codigo, IElementoAB<Documento> nodo, double total, int cantMeses, ILista<String> meses, double promedio){
+        IElementoAB hIzq = nodo.getHijoIzq();
+        IElementoAB hDer = nodo.getHijoDer();
+        
+        Documento docActual = nodo.getDatos();
+        int codProdVendido = docActual.getCodigoProd();
+        
+        if(codProdVendido == codigo){
+            String mes = ManejadorFechas.obtenerMes(docActual.getFechaDocumento());
+            INodo<String> mesObtenido = meses.buscar(mes);
+            double totalActual = docActual.getTotal();
+            if(mesObtenido != null){
+                total += totalActual;
+                promedio = total/cantMeses;
+            }
+            else{
+                meses.insertar(new Nodo(mes, null));
+                cantMeses += 1;
+                total += totalActual;
+                promedio = total/cantMeses;
+            }
+            
+        }
+        if(hIzq != null){
+            return auxPromedioVentas(codigo, hIzq, total, cantMeses, meses, promedio);
+        }
+        if(hDer != null){
+            return auxPromedioVentas(codigo, hDer, total, cantMeses, meses, promedio);
+        }
+        
+        return promedio;
     }
 }

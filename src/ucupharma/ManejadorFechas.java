@@ -33,4 +33,10 @@ public class ManejadorFechas {
     }
     return null;
     }
+    
+    public static String obtenerMes(Date fechaLarga){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fechaLarga);
+        return String.valueOf(cal.get(Calendar.MONTH));
+    }
 }

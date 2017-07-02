@@ -225,6 +225,7 @@ public class Stock {
     
     /**
      * Metodo que permite listar todos los productos en stock.
+     * @return 
      */
     public ILista<IProducto> listarProductos(){
         IElementoAB<IProducto> raiz = arbolStock.getRaiz();
@@ -304,5 +305,73 @@ public class Stock {
         return listaAreas;
     }
     
+    public ILista<IProducto> reporteVencimientos(int año){
+        ILista<IProducto> prodsAVencer = new Lista<>();
+        IElementoAB<IProducto> nodo = arbolStock.getRaiz();
+        try{
+            if(nodo != null){
+            auxReporteVencimientos(nodo, año, prodsAVencer);
+            
+            }
+            else{
+                throw new NullNodeException("Por alguna razón no existen productos en Stock. Por favor, carga un archivo e intentalo nuevamente.");
+            }
+        }
+        catch(NullNodeException ex){
+            ex.getMessage();
+        }
+        return prodsAVencer;
+    }
     
+    public ILista<IProducto> auxReporteVencimientos(IElementoAB<IProducto> nodo, int año, ILista<IProducto> prodsAVencer){
+        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
+        IElementoAB<IProducto> hDer = nodo.getHijoDer();
+        
+        if(nodo.getDatos().getVencimiento() == año){
+            if(nodo.getDatos().getCantidad() > 0){
+                prodsAVencer.insertarOrdenado(new Nodo(nodo.getEtiqueta(), nodo));
+            }
+        }
+        
+        if(hIzq != null){
+            return auxReporteVencimientos(hIzq, año, prodsAVencer);
+        }
+        if(hDer != null){
+            return auxReporteVencimientos(hDer, año, prodsAVencer);
+        }
+        return prodsAVencer;
+    }
+    
+    public void eliminarArea(String area){
+        IElementoAB<IProducto> nodoAct = arbolStock.getRaiz();
+        try{
+            if(nodoAct != null){
+            auxEliminarArea(area, nodoAct);
+            }
+            else{
+                throw new NullNodeException("Por alguna razón no existen productos en Stock. Intenta cargar un archivo primero.");
+            }
+        }
+        catch(NullNodeException ex){
+            ex.getMessage();
+        }
+        
+    }
+    
+    public void auxEliminarArea(String area, IElementoAB<IProducto> nodo){
+        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
+        IElementoAB<IProducto> hDer = nodo.getHijoDer();
+        IProducto prodAct = nodo.getDatos();
+        int codigoAct = prodAct.getCodigo();
+        String areaAct = prodAct.getAreaAplicacion();
+        if(areaAct.equals(area)){
+            nodo.eliminar(codigoAct);
+        }
+        if(hIzq != null){
+            auxEliminarArea(area, hIzq);
+        }
+        if(hDer != null){
+            auxEliminarArea(area, hDer);
+        }
+    }
 }

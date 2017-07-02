@@ -35,7 +35,7 @@ public interface IDocumento {
      * Retorna la fecha de la venta.
      * @return 
      */
-    public Date getFechaVenta();
+    public Date getFechaDocumento();
     
     /**
      * Retorna la fecha de modificación de la venta.
