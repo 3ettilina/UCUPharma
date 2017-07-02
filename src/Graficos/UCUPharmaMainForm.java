@@ -1,23 +1,31 @@
-package ucupharma;
+package Graficos;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import ucupharma.*;
 /**
  *
  * @author logikom
  */
 public class UCUPharmaMainForm extends javax.swing.JFrame {
 
+    public Farmacia ucus;
     /**
      * Creates new form UCUPharmaMainForm
+     * @param pharm
      */
-    public UCUPharmaMainForm() {
+    public UCUPharmaMainForm(Farmacia pharm) {
+        this.ucus = pharm;
         initComponents();
     }
+
+    private UCUPharmaMainForm() {
+        initComponents();
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,7 +41,7 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        menuBuscar = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -60,9 +68,14 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
 
         jMenu2.setText("Productos");
 
-        jMenuItem5.setText("Búsqueda");
-        jMenuItem5.setActionCommand("busqueda");
-        jMenu2.add(jMenuItem5);
+        menuBuscar.setText("Búsqueda");
+        menuBuscar.setActionCommand("busqueda");
+        menuBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuBuscarActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuBuscar);
         jMenu2.add(jSeparator1);
 
         jMenuItem4.setText("Ingreso");
@@ -120,6 +133,10 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void menuBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuBuscarActionPerformed
+        
+    }//GEN-LAST:event_menuBuscarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -165,10 +182,10 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JMenuItem menuBuscar;
     // End of variables declaration//GEN-END:variables
 }

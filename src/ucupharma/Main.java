@@ -5,6 +5,7 @@
  */
 package ucupharma;
 
+import Graficos.*;
 import Interfaces.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +24,14 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
         Farmacia UcuPharma = new Farmacia("UcuPharma");
-        home(UcuPharma);
+        
+        UCUPharmaMainForm mainForm = new UCUPharmaMainForm(UcuPharma);
+        mainForm.setSize(800, 600);
+        mainForm.setVisible(true);
+        
+        UcuPharma.cargarStock("C:\\farmacia_stock_big.csv");
+        UcuPharma.cargarProductos("C:\\farmacia_articles_big.csv", "NO");
+        //home(UcuPharma);
     }
         /**
          * Menu principal
