@@ -31,9 +31,9 @@ public class GestorDocumentos {
         listaDocumentos.insertar(nodoArbolVenta);
         
         // Creo el arbol devolucion y lo inserto en el nodo correspondiente.
-        IArbolBB<Documento> arbolDevolucion = new TArbolBB<>();
-        INodo<IArbolBB<Documento>> nodoArbolDevolucion = new Nodo("Devolucion", arbolDevolucion);
-        listaDocumentos.insertar(nodoArbolDevolucion);
+        IArbolBB<Documento> arbolCompra = new TArbolBB<>();
+        INodo<IArbolBB<Documento>> nodoArbolCompra = new Nodo("Compra", arbolCompra);
+        listaDocumentos.insertar(nodoArbolCompra);
     } 
     
     /**
@@ -47,7 +47,7 @@ public class GestorDocumentos {
             IProducto prodAVender = nodoProd.getDatos();
             if (prodAVender.getCantidad() >= cantidad){
                 double total = (prodAVender.getPrecio())*cantidad;
-                Documento venta = new Documento(codigo, cantidad, total, 1, 0);
+                Documento venta = new Documento(codigo, prodAVender.getDescripcionCorta(), prodAVender.getAreaAplicacion(), cantidad, total, 1, 0);
                 
                 IElementoAB<Documento> elemVenta = new TElementoAB(venta.getId(), venta);
                 prodAVender.setCantidad(prodAVender.getCantidad()-cantidad);
@@ -115,14 +115,14 @@ public class GestorDocumentos {
             IProducto prodAComprar = nodoProd.getDatos();
             if (cantidad >= 0){
                 double total = (prodAComprar.getPrecio())*cantidad;
-                Documento venta = new Documento(codigo, cantidad, total, 1, 0);
+                Documento compra = new Documento(codigo, prodAComprar.getDescripcionCorta(), prodAComprar.getAreaAplicacion(), cantidad, total, 1, 0);
                 
-                IElementoAB<Documento> elemVenta = new TElementoAB(venta.getId(), venta);
+                IElementoAB<Documento> elemVenta = new TElementoAB(compra.getId(), compra);
                 prodAComprar.setCantidad(prodAComprar.getCantidad()+cantidad);
                 
-                INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Venta");
+                INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Compra");
                 nodoVenta.getDato().insertar(elemVenta);
-                System.out.println("Venta realizada satisfactoriamente. El id de su compra es: " + venta.getId() + ". Lo precisará si desea realizar una devolución.");
+                System.out.println("Compra realizada satisfactoriamente.");
   
             }
             else{
@@ -151,10 +151,10 @@ public class GestorDocumentos {
                 return auxReporte(nodoVenta, fechaDesde, fechaHasta, ventasEncontradas);
             }
             else{
-                throw new NullTreeException("No existe ninguna venta realizada hasta el momento. Por favor, intentelo más tarde.");
+                throw new NullNodeException("No existe ninguna venta realizada hasta el momento. Por favor, intentelo más tarde.");
             }
         }
-        catch (NullTreeException ex){
+        catch (NullNodeException ex){
             ex.getMessage();
         }
         return ventasEncontradas;
@@ -198,10 +198,10 @@ public class GestorDocumentos {
                 auxReporteVentasPorProd(codigo, elemVenta, ventasProd);
             }
             else{
-                throw new NullTreeException("No existen ventas de ningún producto registradas hasta el momento.");
+                throw new NullNodeException("No existen ventas de ningún producto registradas hasta el momento.");
             }
         }
-        catch(NullTreeException ex){
+        catch(NullNodeException ex){
             ex.getMessage();
         }
         
@@ -227,5 +227,47 @@ public class GestorDocumentos {
         return ventas;
     }
     
+    public ILista<IElementoAB<Documento>> movimientosPorArea(String area){
+        IArbolBB<Documento> ventas = listaDocumentos.buscar("Venta").getDato();
+        IElementoAB nodoVenta = ventas.getRaiz();
+        IArbolBB<Documento> compras = listaDocumentos.buscar("Compra").getDato();
+        IElementoAB nodoCompra = compras.getRaiz();
+        
+        ILista<IElementoAB<Documento>> listaDocsArea = new Lista<>();
+        
+        try{
+            if(nodoVenta != null){
+                auxMovimientosPorArea(area, nodoVenta, listaDocsArea);
+            }
+            if(nodoCompra != null){
+               auxMovimientosPorArea(area, nodoCompra, listaDocsArea);
+
+            }
+            if((nodoVenta == null) && (nodoCompra == null)){
+                throw new NullNodeException("No existen compras o ventas en la base de datos.");
+            }
+        }
+        catch(NullNodeException ex){
+            ex.getMessage();
+        }
+        
+        return listaDocsArea;
+    }
     
+    public ILista<IElementoAB<Documento>> auxMovimientosPorArea(String areaAp, IElementoAB<Documento> nodo, ILista<IElementoAB<Documento>> listaDocsArea){    
+        
+        Documento doc = nodo.getDatos();
+        IElementoAB<Documento> hIzq = nodo.getHijoIzq();
+        IElementoAB<Documento> hDer = nodo.getHijoDer();
+        if(doc.areaAplicacion.equals(areaAp)){
+            listaDocsArea.insertarOrdenado(new Nodo(doc.fechaDocumento, doc));
+        }
+        if(hIzq != null){
+            return auxMovimientosPorArea(areaAp, nodo, listaDocsArea);
+        }
+        if(hDer != null){
+            return auxMovimientosPorArea(areaAp, nodo, listaDocsArea);
+        }
+        return listaDocsArea;
+    }
 }

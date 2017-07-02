@@ -19,6 +19,8 @@ public class Documento implements IDocumento{
     public static int ultimoId = 1;
     public Comparable id;
     public int codigoProducto;
+    public String descripcionCorta;
+    public String areaAplicacion;
     public int cantidad;
     public double total;
     
@@ -28,17 +30,20 @@ public class Documento implements IDocumento{
     /**
      * Metodo constructor de un objeto Venta
      * @param codProducto
+     * @param descCorta
      * @param cantidad
      * @param total 
      * @param tipo_documento 
      * @param nroDoc 
      */
-    public Documento(int codProducto, int cantidad, double total, int tipo_documento, int nroDoc){
+    public Documento(int codProducto, String descCorta, String areaAp, int cantidad, double total, int tipo_documento, int nroDoc){
         this.fechaDocumento = ManejadorFechas.obtenerFecha();
         this.fechaModificacion = ManejadorFechas.obtenerFecha();
         this.tipoDocumento = tipo_documento;
         setNroDocumento(nroDoc);
         this.codigoProducto = codProducto;
+        this.descripcionCorta = descCorta;
+        this.areaAplicacion = areaAp;
         this.cantidad = cantidad;
         this.total = total;
         

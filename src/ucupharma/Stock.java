@@ -180,22 +180,21 @@ public class Stock {
             IElementoAB<IProducto> raiz = arbolStock.getRaiz();
             
             if (raiz == null){
-                throw new NullTreeException("No existen productos en el Stock. Por favor, verifique.");
+                throw new NullNodeException("No existen productos en el Stock. Por favor, verifique.");
             }
             else{
                 return auxBuscarPorDesc(raiz, descripcion, descCorta, listEncontrados);
             }
             
-        } catch (NullTreeException e) {
+        } catch (NullNodeException e) {
             e.getMessage();
         }
         return listEncontrados;
     }
     
-    public ILista<IElementoAB<IProducto>> auxBuscarPorDesc(IElementoAB nodo, String desc, Boolean tDescCorta, ILista prodEncontrados){
-        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
-        IElementoAB<IProducto> hDer = nodo.getHijoDer();
-        IElementoAB<IProducto> elemProd = new TElementoAB(nodo.getEtiqueta(), nodo.getDatos());
+    public ILista<IElementoAB<IProducto>> auxBuscarPorDesc(IElementoAB<IProducto> elemProd, String desc, Boolean tDescCorta, ILista prodEncontrados){
+        IElementoAB<IProducto> hIzq = elemProd.getHijoIzq();
+        IElementoAB<IProducto> hDer = elemProd.getHijoDer();
         if(tDescCorta){
             IProducto prod = elemProd.getDatos();
             if(desc.contains(prod.getDescripcionCorta())){
@@ -227,32 +226,83 @@ public class Stock {
     /**
      * Metodo que permite listar todos los productos en stock.
      */
-    public void listarProductos(){
+    public ILista<IProducto> listarProductos(){
         IElementoAB<IProducto> raiz = arbolStock.getRaiz();
+        ILista<IProducto> productos = new Lista<>();
+        
         if (raiz == null){
             System.out.println("No existen productos en el stock.");
         }
-        
         else{
-            auxListarProductos(raiz);
+            auxListarProductos(raiz, productos);
         }
+        return productos;
     }
     
-    public void auxListarProductos(IElementoAB<IProducto> nodo){
-        IProducto producto = nodo.getDatos();
-        System.out.println(producto);
-        System.out.println("\n");
+    public ILista<IProducto> auxListarProductos(IElementoAB<IProducto> nodo, ILista<IProducto> prods){
         
         IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
         IElementoAB<IProducto> hDer = nodo.getHijoDer();
+        
+        INodo<IProducto> prodAInsertar = new Nodo(nodo.getEtiqueta(), nodo.getDatos());
+        prods.insertar(prodAInsertar);
         if (hIzq != null){
-            auxListarProductos(hIzq);
+            return auxListarProductos(hIzq, prods);
         }
         if (hDer != null){
-            auxListarProductos(hDer);
+            return auxListarProductos(hDer, prods);
         }
+        return prods;
     }
     
+    public ILista<IArbolBB<IProducto>> listarPorArea(){
+        IElementoAB<IProducto> elemProd = arbolStock.getRaiz();
+        ILista<IArbolBB<IProducto>> listaAreas = new Lista<>();
+        
+        try{
+            if(elemProd != null){
+                auxListarPorArea(elemProd, listaAreas);
+            }
+            else{
+                throw new NullNodeException("Por alguna razón no hay artículos en Stock. Por favor, realice una carga de stock.");
+            }
+        }
+        catch(NullNodeException ex){
+            ex.getMessage();
+        }
+        return listaAreas;
+    }
+    
+    public ILista<IArbolBB<IProducto>> auxListarPorArea(IElementoAB<IProducto> nodoAct, ILista listaAreas){
+        IElementoAB<IProducto> hIzq = nodoAct.getHijoIzq();
+        IElementoAB<IProducto> hDer = nodoAct.getHijoDer();
+        
+        IProducto prod = nodoAct.getDatos();
+        String areaProd = prod.getAreaAplicacion();
+        
+        INodo<IArbolBB<IProducto>> area = listaAreas.buscar(areaProd);
+        
+        if(area != null){
+            IArbolBB<IProducto> arbolArea = area.getDato();
+            arbolArea.insertar(nodoAct);
+        }
+        else{
+            IArbolBB<IProducto> arbolArea = new TArbolBB();
+            arbolArea.insertar(nodoAct);
+            listaAreas.insertar(new Nodo(areaProd, arbolArea));
+        }
+        
+        if(hIzq != null){
+            return auxListarPorArea(hIzq,listaAreas);
+        }
+        
+        if(hDer != null){
+            return auxListarPorArea(hDer,listaAreas);
+        }
+        
+        
+        return listaAreas;
+    }
     
     
 }

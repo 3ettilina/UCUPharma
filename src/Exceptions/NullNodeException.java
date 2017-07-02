@@ -9,13 +9,13 @@ package Exceptions;
  *
  * @author logikom
  */
-public class NullTreeException extends Exception{
+public class NullNodeException extends Exception{
     
-    public NullTreeException(){
+    public NullNodeException(){
         
     }
     
-    public NullTreeException(String mensaje){
+    public NullNodeException(String mensaje){
         super(mensaje);
     }
 }
