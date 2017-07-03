@@ -87,6 +87,10 @@ public class TArbolBB<T> implements IArbolBB<T> {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public LinkedList<Comparable> inorden() {
         LinkedList<Comparable> listaInorden = null;
@@ -105,7 +109,38 @@ public class TArbolBB<T> implements IArbolBB<T> {
         }
     }
 
+    public ILista<T> buscarParametro(String param, String aBuscar){
+        ILista<T> lista = new Lista<>();
+        if(esVacio()){
+            return null;
+        }
+        else{
+            this.raiz.buscarParametro(param, aBuscar, lista);
+        }
+        return lista;
+    }
     
+    public ILista<T> listarTodos(){
+        ILista<T> lista = new Lista<>();
+        if(esVacio()){
+            return null;
+        }
+        else{
+            this.raiz.listarTodos(lista);
+        }
+        return lista;
+    }
+    
+    public ILista<ILista<T>> listarAreas(){
+        ILista<ILista<T>> lista = new Lista<>();
+        if(esVacio()){
+            return null;
+        }
+        else{
+            this.raiz.listarAreas(lista);
+        }
+        return lista;
+    }
 
    
 }

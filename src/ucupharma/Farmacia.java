@@ -5,7 +5,6 @@
  */
 package ucupharma;
 import Interfaces.*;
-import java.util.*;
 
 /**
  *
@@ -19,8 +18,8 @@ public class Farmacia {
     
     public Farmacia(String nombre){
         this.nombre = nombre;
-        this.stock = new Stock();
-        this.documentos = new GestorDocumentos();
+        Farmacia.stock = new Stock();
+        Farmacia.documentos = new GestorDocumentos();
     }
     
     /**
@@ -98,14 +97,26 @@ public class Farmacia {
     /**
      * Método que busca productos por su descripción corta.
      * @param descripcion - Cadena de texto que indica los caracteres a buscar en la descripción corta de los productos.
+     * @return lista de productos que contienen esa descripción corta
      */
-    public void buscarPorDescripcion(String descripcion, Boolean tipoDesc){
-        stock.buscarPorDesc(descripcion, tipoDesc);
+    public ILista<IProducto> buscarPorDescCorta(String descripcion){
+        return stock.buscarPorDescCorta(descripcion);
     }
     
+    public ILista<IProducto> buscarPorDescLarga(String descripcion){
+        return stock.buscarPorDescCorta(descripcion);
+    }
     
-    public void listarProductos(){
-        stock.listarProductos();
+    public ILista<ILista<IProducto>> listarAreas(){
+        return stock.listarPorArea();
+    }
+    
+    public ILista<IProducto> listarProductos(){
+        return stock.listarProductos();
+    }
+    
+    public ILista<IProducto> buscarVencimientos(String año){
+        return stock.reporteVencimientos(año);
     }
 
 }

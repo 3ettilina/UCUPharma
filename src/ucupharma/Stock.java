@@ -89,52 +89,46 @@ public class Stock {
      */
     public void cargarProductos(String rutaArchivo, String modificar){
         try{
-            if("SI".equals(modificar.toUpperCase()) || "NO".equals(modificar.toUpperCase())){
-                ArrayList<String> productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
-                productosLeidos.remove(0);
-                Collections.shuffle(productosLeidos);
-                for (int i = 0; i < productosLeidos.size(); i++) {
-                    String[] unProducto = productosLeidos.get(i).split(";");
-                    int codigoProducto = Integer.parseInt(unProducto[0]);
-                    IElementoAB<IProducto> nodoProductoEncontrado = arbolStock.buscar(codigoProducto);
-                    if (nodoProductoEncontrado != null){
-                        IProducto prodEncontrado = nodoProductoEncontrado.getDatos();
-                        if ("SI".equals(modificar.toUpperCase())){
-                            prodEncontrado.setUltimaActualizacion(ManejadorFechas.obtenerFecha());
-                            prodEncontrado.setPrecio(Double.parseDouble(unProducto[3]));
-                            prodEncontrado.setDescCorta(unProducto[4]);
-                            prodEncontrado.setDescLarga(unProducto[5]);
-                            prodEncontrado.setEstado(unProducto[6]);
-                            prodEncontrado.setRefrigerado(Boolean.parseBoolean(unProducto[7]));
-                            prodEncontrado.setRequiereReceta(Boolean.parseBoolean(unProducto[8]));
-                            prodEncontrado.setVencimiento(Integer.parseInt(unProducto[9]));
-                            prodEncontrado.setAreaAplicacion(unProducto[10]);
-                            prodEncontrado.setCantidad(0);
-                        }
-                    }
-                    else{
-                        int codigo = Integer.parseInt(unProducto[0]);
-                        Date fecha_creacion = ManejadorFechas.crearFecha(unProducto[1]);
-                        Date ult_actualizacion = ManejadorFechas.crearFecha(unProducto[2]);
-                        double precio = Double.parseDouble(unProducto[3]);
-                        String descCorta = unProducto[4];
-                        String descLarga = unProducto[5];
-                        String estado = unProducto[6];
-                        boolean refrigerado = Boolean.parseBoolean(unProducto[7]);
-                        boolean receta = Boolean.parseBoolean(unProducto[8]);
-                        int vencimiento = Integer.parseInt(unProducto[9]);
-                        String areaAplicacion = unProducto[10];
-                        int cantidad = 0;
-
-                        IProducto productoNuevo = new Producto(codigo, fecha_creacion, ult_actualizacion, precio, descCorta, descLarga, estado, refrigerado, receta, vencimiento, areaAplicacion, cantidad);
-                        IElementoAB<IProducto> productoAIngresar = new TElementoAB(codigo, productoNuevo);
-                        arbolStock.insertar(productoAIngresar);
+            ArrayList<String> productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
+            productosLeidos.remove(0);
+            Collections.shuffle(productosLeidos);
+            for (int i = 0; i < productosLeidos.size(); i++) {
+                String[] unProducto = productosLeidos.get(i).split(";");
+                int codigoProducto = Integer.parseInt(unProducto[0]);
+                IElementoAB<IProducto> nodoProductoEncontrado = arbolStock.buscar(codigoProducto);
+                if (nodoProductoEncontrado != null){
+                    IProducto prodEncontrado = nodoProductoEncontrado.getDatos();
+                    if ("SI".equals(modificar.toUpperCase())){
+                        prodEncontrado.setUltimaActualizacion(ManejadorFechas.obtenerFecha());
+                        prodEncontrado.setPrecio(Double.parseDouble(unProducto[3]));
+                        prodEncontrado.setDescCorta(unProducto[4]);
+                        prodEncontrado.setDescLarga(unProducto[5]);
+                        prodEncontrado.setEstado(unProducto[6]);
+                        prodEncontrado.setRefrigerado(Boolean.parseBoolean(unProducto[7]));
+                        prodEncontrado.setRequiereReceta(Boolean.parseBoolean(unProducto[8]));
+                        prodEncontrado.setVencimiento(Integer.parseInt(unProducto[9]));
+                        prodEncontrado.setAreaAplicacion(unProducto[10]);
+                        prodEncontrado.setCantidad(0);
                     }
                 }
-            }
-            else{
-                ;
+                else{
+                    int codigo = Integer.parseInt(unProducto[0]);
+                    Date fecha_creacion = ManejadorFechas.crearFecha(unProducto[1]);
+                    Date ult_actualizacion = ManejadorFechas.crearFecha(unProducto[2]);
+                    double precio = Double.parseDouble(unProducto[3]);
+                    String descCorta = unProducto[4];
+                    String descLarga = unProducto[5];
+                    String estado = unProducto[6];
+                    boolean refrigerado = Boolean.parseBoolean(unProducto[7]);
+                    boolean receta = Boolean.parseBoolean(unProducto[8]);
+                    int vencimiento = Integer.parseInt(unProducto[9]);
+                    String areaAplicacion = unProducto[10];
+                    int cantidad = 0;
 
+                    IProducto productoNuevo = new Producto(codigo, fecha_creacion, ult_actualizacion, precio, descCorta, descLarga, estado, refrigerado, receta, vencimiento, areaAplicacion, cantidad);
+                    IElementoAB<IProducto> productoAIngresar = new TElementoAB(codigo, productoNuevo);
+                    arbolStock.insertar(productoAIngresar);
+                }
             }
         }
         catch(Exception ex){
@@ -151,15 +145,13 @@ public class Stock {
         try {
             ArrayList<String> productosLeidos = ManejadorArchivos.leerArchivo(rutaArchivo);
             productosLeidos.remove(0);
-            Collections.shuffle(productosLeidos);
             for (int i = 0; i < productosLeidos.size(); i++) {
                 String[] unProducto = productosLeidos.get(i).split(";");
                 int codigo = Integer.parseInt(unProducto[0]);
                 int cant = Integer.parseInt(unProducto[1]);
                 IElementoAB<IProducto> nodoProductoEncontrado = arbolStock.buscar(codigo);
                 if(nodoProductoEncontrado != null){
-                    int cantAct = nodoProductoEncontrado.getDatos().getCantidad();
-                    nodoProductoEncontrado.getDatos().setCantidad(cantAct + cant);
+                    nodoProductoEncontrado.getDatos().setCantidad(nodoProductoEncontrado.getDatos().getCantidad() + cant);
                 }
             }
         } catch (Exception ex) {
@@ -180,11 +172,10 @@ public class Stock {
     /**
      * Método que busca productos por su descripción corta o larga.
      * @param descripcion - Cadena de texto que indica los caracteres a buscar en la descripción corta de los productos.
-     * @param descCorta - Indica si el usuario quiere buscar por descripcion corta o larga
      * @return Elementos encontrados
      */
-    public ILista<IElementoAB<IProducto>> buscarPorDesc(String descripcion, Boolean descCorta){
-        ILista<IElementoAB<IProducto>> listEncontrados = new Lista();
+    public ILista<IProducto> buscarPorDescCorta(String descripcion){
+        ILista<IProducto> listEncontrados = new Lista();
         try {
             IElementoAB<IProducto> raiz = arbolStock.getRaiz();
             
@@ -192,45 +183,30 @@ public class Stock {
                 throw new NullNodeException("No existen productos en el Stock. Por favor, verifique.");
             }
             else{
-                return auxBuscarPorDesc(raiz, descripcion, descCorta, listEncontrados);
+                raiz.buscarParametro("descripcion_corta", descripcion, listEncontrados);
             }
-            
         } catch (NullNodeException e) {
             e.getMessage();
         }
         return listEncontrados;
     }
     
-    public ILista<IElementoAB<IProducto>> auxBuscarPorDesc(IElementoAB<IProducto> elemProd, String desc, Boolean tDescCorta, ILista prodEncontrados){
-        IElementoAB<IProducto> hIzq = elemProd.getHijoIzq();
-        IElementoAB<IProducto> hDer = elemProd.getHijoDer();
-        if(tDescCorta){
-            IProducto prod = elemProd.getDatos();
-            if(desc.contains(prod.getDescripcionCorta())){
-                prodEncontrados.insertarOrdenado(new Nodo(elemProd.getEtiqueta(), elemProd.getDatos()));
+    public ILista<IProducto> buscarPorDescLarga(String descripcion){
+        ILista<IProducto> listEncontrados = new Lista();
+        try {
+            IElementoAB<IProducto> raiz = arbolStock.getRaiz();
+            
+            if (raiz == null){
+                throw new NullNodeException("No existen productos en el Stock. Por favor, verifique.");
             }
-            if(hIzq != null){
-                return auxBuscarPorDesc(hIzq, desc, tDescCorta, prodEncontrados);
+            else{
+                raiz.buscarParametro("descripcion_larga", descripcion, listEncontrados);
             }
-            if(hDer != null){
-                return auxBuscarPorDesc(hDer, desc, tDescCorta, prodEncontrados);
-            }
+        } catch (NullNodeException e) {
+            e.getMessage();
         }
-        if (! tDescCorta){
-            IProducto prod = elemProd.getDatos();
-            if(desc.contains(prod.getDescripcionLarga())){
-                prodEncontrados.insertarOrdenado(new Nodo(elemProd.getEtiqueta(), elemProd.getDatos()));
-            }
-            if(hIzq != null){
-                return auxBuscarPorDesc(hIzq, desc, tDescCorta, prodEncontrados);
-            }
-            if(hDer != null){
-                return auxBuscarPorDesc(hDer, desc, tDescCorta, prodEncontrados);
-            }
-        }
-        return prodEncontrados;
+        return listEncontrados;
     }
-    
     
     /**
      * Metodo que permite listar todos los productos en stock.
@@ -244,34 +220,18 @@ public class Stock {
             System.out.println("No existen productos en el stock.");
         }
         else{
-            auxListarProductos(raiz, productos);
+            raiz.listarTodos(productos);
         }
         return productos;
     }
     
-    public ILista<IProducto> auxListarProductos(IElementoAB<IProducto> nodo, ILista<IProducto> prods){
-        
-        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
-        IElementoAB<IProducto> hDer = nodo.getHijoDer();
-        
-        INodo<IProducto> prodAInsertar = new Nodo(nodo.getEtiqueta(), nodo.getDatos());
-        prods.insertar(prodAInsertar);
-        if (hIzq != null){
-            return auxListarProductos(hIzq, prods);
-        }
-        if (hDer != null){
-            return auxListarProductos(hDer, prods);
-        }
-        return prods;
-    }
-    
-    public ILista<IArbolBB<IProducto>> listarPorArea(){
-        IElementoAB<IProducto> elemProd = arbolStock.getRaiz();
-        ILista<IArbolBB<IProducto>> listaAreas = new Lista<>();
+    public ILista<ILista<IProducto>> listarPorArea(){
+        IElementoAB<IProducto> raiz = arbolStock.getRaiz();
+        ILista<ILista<IProducto>> listaAreas = new Lista<>();
         
         try{
-            if(elemProd != null){
-                auxListarPorArea(elemProd, listaAreas);
+            if(raiz != null){
+                raiz.listarAreas(listaAreas);
             }
             else{
                 throw new NullNodeException("Por alguna razón no hay artículos en Stock. Por favor, realice una carga de stock.");
@@ -283,44 +243,12 @@ public class Stock {
         return listaAreas;
     }
     
-    public ILista<IArbolBB<IProducto>> auxListarPorArea(IElementoAB<IProducto> nodoAct, ILista listaAreas){
-        IElementoAB<IProducto> hIzq = nodoAct.getHijoIzq();
-        IElementoAB<IProducto> hDer = nodoAct.getHijoDer();
-        
-        IProducto prod = nodoAct.getDatos();
-        String areaProd = prod.getAreaAplicacion();
-        
-        INodo<IArbolBB<IProducto>> area = listaAreas.buscar(areaProd);
-        
-        if(area != null){
-            IArbolBB<IProducto> arbolArea = area.getDato();
-            arbolArea.insertar(nodoAct);
-        }
-        else{
-            IArbolBB<IProducto> arbolArea = new TArbolBB();
-            arbolArea.insertar(nodoAct);
-            listaAreas.insertar(new Nodo(areaProd, arbolArea));
-        }
-        
-        if(hIzq != null){
-            return auxListarPorArea(hIzq,listaAreas);
-        }
-        
-        if(hDer != null){
-            return auxListarPorArea(hDer,listaAreas);
-        }
-        
-        
-        return listaAreas;
-    }
-    
-    public ILista<IProducto> reporteVencimientos(int año){
+    public ILista<IProducto> reporteVencimientos(String año){
         ILista<IProducto> prodsAVencer = new Lista<>();
         IElementoAB<IProducto> nodo = arbolStock.getRaiz();
         try{
             if(nodo != null){
-            auxReporteVencimientos(nodo, año, prodsAVencer);
-            
+                nodo.buscarParametro("vencimiento", año, prodsAVencer);
             }
             else{
                 throw new NullNodeException("Por alguna razón no existen productos en Stock. Por favor, carga un archivo e intentalo nuevamente.");
@@ -328,25 +256,6 @@ public class Stock {
         }
         catch(NullNodeException ex){
             ex.getMessage();
-        }
-        return prodsAVencer;
-    }
-    
-    public ILista<IProducto> auxReporteVencimientos(IElementoAB<IProducto> nodo, int año, ILista<IProducto> prodsAVencer){
-        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
-        IElementoAB<IProducto> hDer = nodo.getHijoDer();
-        
-        if(nodo.getDatos().getVencimiento() == año){
-            if(nodo.getDatos().getCantidad() > 0){
-                prodsAVencer.insertarOrdenado(new Nodo(nodo.getEtiqueta(), nodo));
-            }
-        }
-        
-        if(hIzq != null){
-            return auxReporteVencimientos(hIzq, año, prodsAVencer);
-        }
-        if(hDer != null){
-            return auxReporteVencimientos(hDer, año, prodsAVencer);
         }
         return prodsAVencer;
     }

@@ -88,5 +88,9 @@ public interface IElementoAB<T> {
      */
     public IElementoAB<T> eliminar(Comparable unaEtiqueta);
 	
-
+    public void buscarParametro(String param, String aBuscar, ILista lis);
+    
+    public void listarTodos(ILista<T> list);
+    
+    public void listarAreas(ILista<ILista<T>> list);
 }

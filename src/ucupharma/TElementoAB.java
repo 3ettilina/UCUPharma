@@ -2,7 +2,10 @@ package ucupharma;
 
 
 import Interfaces.*;
+import java.lang.reflect.Field;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class TElementoAB<T> implements IElementoAB<T> {
@@ -81,9 +84,102 @@ public class TElementoAB<T> implements IElementoAB<T> {
         }
     }
    
+    @Override
+    public void buscarParametro(String param, String aBuscar, ILista lista){
+        try{
+            Class datoClass = this.datos.getClass();
+            Field paramABuscar = datoClass.getDeclaredField(param);
+            paramABuscar.setAccessible(true);
+            
+            String vAct = paramABuscar.get(this.datos).toString();
+            
+            if(vAct.toUpperCase().contains(aBuscar.toUpperCase())){
+                lista.insertarOrdenado(new Nodo(this.etiqueta, this.datos));
+            }
+            if(this.hijoIzq != null){
+                hijoIzq.buscarParametro(param, aBuscar, lista);
+            }
+            if(this.hijoDer != null){
+                hijoDer.buscarParametro(param, aBuscar, lista);
+            }
+            
+        } catch (NoSuchFieldException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
-    
+    /**
+     *
+     * @param lista
+     */
+    @Override
+    public void listarTodos(ILista<T> lista){
+        lista.insertar(new Nodo(this.etiqueta, this.datos));
+        if(this.hijoIzq != null){
+            hijoIzq.listarTodos(lista);
+        }
+        if(this.hijoDer != null){
+            hijoDer.listarTodos(lista);
+        }
+    }
 
+    /**
+     *
+     * @param lista
+     */
+    @Override
+    public void listarAreas(ILista<ILista<T>> lista){
+        try{
+            ILista<IProducto> listaArea = new Lista<>();
+            
+            Class datoClass = this.datos.getClass();
+            Field areaApli = datoClass.getDeclaredField("areaAplicacion");
+            areaApli.setAccessible(true);
+            String areaProd = areaApli.get(this.datos).toString();
+            
+            Field desc = datoClass.getDeclaredField("descripcion_corta");
+            desc.setAccessible(true);
+            String descProd = desc.get(this.datos).toString();
+            
+            INodo<ILista<T>> nodo = lista.buscar(areaProd);
+            if(nodo != null){
+                if(nodo.getEtiqueta().equals(areaProd)){
+                    nodo.getDato().insertarOrdenado(new Nodo(descProd, this.datos));
+                }
+            }
+            else{
+                listaArea.insertarOrdenado(new Nodo(descProd, this.datos));
+                lista.insertarOrdenado(new Nodo(areaProd,listaArea));
+            }
+            if(this.hijoIzq != null){
+                hijoIzq.listarAreas(lista);
+            }
+            if(this.hijoDer != null){
+                hijoDer.listarAreas(lista);
+            }
+        } 
+        catch (NoSuchFieldException ex) {
+        Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (SecurityException ex) {
+        Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IllegalArgumentException ex) {
+        Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IllegalAccessException ex) {
+        Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }
     /**
      * @return recorrida en inorden del subArbol que cuelga del elemento actual
      */

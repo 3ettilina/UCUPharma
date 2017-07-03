@@ -25,12 +25,14 @@ public class Main {
         // TODO code application logic here
         Farmacia UcuPharma = new Farmacia("UcuPharma");
         
+        UcuPharma.cargarProductos("C:\\farmacia_articles_big.csv", "NO");
+        UcuPharma.cargarStock("C:\\farmacia_stock_big.csv");
+        
         UCUPharmaMainForm mainForm = new UCUPharmaMainForm(UcuPharma);
         mainForm.setSize(1000, 700);
         mainForm.setVisible(true);
         
-        UcuPharma.cargarStock("C:\\farmacia_stock_big.csv");
-        UcuPharma.cargarProductos("C:\\farmacia_articles_big.csv", "NO");
+        
         //home(UcuPharma);
     }
         /**
@@ -38,6 +40,7 @@ public class Main {
          * @param UcuPharma
          * @throws IOException 
          */
+    /*
         public static void home(Farmacia UcuPharma) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Bienvenido a UCUPharma, sistema de control de Stock integral.");
@@ -218,6 +221,6 @@ public class Main {
                 home(UcuPharma);
             }
         }
-    }
+    }*/
     
 }

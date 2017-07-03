@@ -50,7 +50,7 @@ public class ManejadorArchivos {
         ArrayList<String> listaLineasArchivo = new ArrayList<>();
         try {
             fr = new FileInputStream(nombreCompletoArchivo);
-            InputStreamReader fich = new InputStreamReader(fr, "UTF-8");
+            InputStreamReader fich = new InputStreamReader(fr, "iso-8859-1");
             BufferedReader br = new BufferedReader(fich);
             String lineaActual = br.readLine();
             while (lineaActual != null) {
