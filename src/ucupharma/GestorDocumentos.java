@@ -47,8 +47,8 @@ public class GestorDocumentos {
             IProducto prodAVender = nodoProd.getDatos();
             if (prodAVender.getCantidad() >= cantidad){
                 double total = (prodAVender.getPrecio())*cantidad;
-                Documento venta = new Documento(codigo, prodAVender.getDescripcionCorta(), prodAVender.getAreaAplicacion(), cantidad, total, 1, 0);
-                
+                Documento venta = new Documento(codigo, prodAVender.getDescripcionCorta(), prodAVender.getAreaAplicacion(), cantidad, total, "Venta", 0);
+                venta.setPrecioUnitario(prodAVender.getPrecio());
                 IElementoAB<Documento> elemVenta = new TElementoAB(venta.getId(), venta);
                 prodAVender.setCantidad(prodAVender.getCantidad()-cantidad);
                 
@@ -109,13 +109,13 @@ public class GestorDocumentos {
         }
     }
     
-    public void comprar(int codigo, int cantidad){
+    public void comprar(int numDocumento, int codigo, int cantidad){
         IElementoAB<IProducto> nodoProd = arbolStock.buscar(codigo);
         if (nodoProd != null){
             IProducto prodAComprar = nodoProd.getDatos();
             if (cantidad >= 0){
                 double total = (prodAComprar.getPrecio())*cantidad;
-                Documento compra = new Documento(codigo, prodAComprar.getDescripcionCorta(), prodAComprar.getAreaAplicacion(), cantidad, total, 1, 0);
+                Documento compra = new Documento(codigo, prodAComprar.getDescripcionCorta(), prodAComprar.getAreaAplicacion(), cantidad, total, "Compra", numDocumento);
                 
                 IElementoAB<Documento> elemVenta = new TElementoAB(compra.getId(), compra);
                 prodAComprar.setCantidad(prodAComprar.getCantidad()+cantidad);
@@ -136,19 +136,16 @@ public class GestorDocumentos {
         }
     }
     
-    public ILista<IElementoAB<Documento>> reporte(String fecha_desde, String fecha_hasta){
-        Date fechaDesde = ManejadorFechas.crearFecha(fecha_desde);
-        Date fechaHasta = ManejadorFechas.crearFecha(fecha_hasta);
-        
+    public ILista<Documento> reporte(String fecha_desde, String fecha_hasta){
+        Date fDesde = ManejadorFechas.crearFecha(fecha_desde);
+        Date fHasta = ManejadorFechas.crearFecha(fecha_hasta);
         INodo<IArbolBB<Documento>> nodoListaDoc = listaDocumentos.buscar("Venta");
         IArbolBB<Documento> arbolVenta = nodoListaDoc.getDato();
-        IElementoAB<Documento> nodoVenta = arbolVenta.getRaiz();
-        
-        ILista<IElementoAB<Documento>> ventasEncontradas = new Lista<>();
+        ILista<Documento> lista = new Lista<>();
         
         try{
-            if(nodoVenta != null){
-                return auxReporte(nodoVenta, fechaDesde, fechaHasta, ventasEncontradas);
+            if(arbolVenta != null){
+                arbolVenta.getRaiz().reporteVentas(fDesde, fHasta, lista);
             }
             else{
                 throw new NullNodeException("No existe ninguna venta realizada hasta el momento. Por favor, intentelo más tarde.");
@@ -157,45 +154,17 @@ public class GestorDocumentos {
         catch (NullNodeException ex){
             ex.getMessage();
         }
-        return ventasEncontradas;
+        return lista;
     }
     
-    
-    /**
-     * Método que devuelve un reporte de ventas utilizando un rango de fechas.
-     * @param nodoVenta
-     * @param fecha_desde - Fecha anterior desde donde se comienza la búsqueda.
-     * @param fecha_hasta - Fecha más reciente hasta donde se busca.
-     * @param ventasEncontradas
-     * @return lista de ventas encontradas en el rango de fechas indicado.
-     */
-    public ILista<IElementoAB<Documento>> auxReporte(IElementoAB nodoVenta, Date fecha_desde, Date fecha_hasta, ILista ventasEncontradas){
-        IElementoAB<Documento> hIzq = nodoVenta.getHijoIzq();
-        IElementoAB<Documento> hDer = nodoVenta.getHijoDer();
-        IElementoAB<Documento> elemVenta = new TElementoAB(nodoVenta.getEtiqueta(), nodoVenta);
-        Documento venta = elemVenta.getDatos();
-        Date fechaVenta = venta.getFechaDocumento();
-        if(fechaVenta.compareTo(fecha_desde) >= 0 && fechaVenta.compareTo(fecha_hasta) <= 0){
-            ventasEncontradas.insertar(new Nodo(elemVenta.getEtiqueta(), elemVenta.getDatos()));
-        }
-        if(hIzq != null){
-            return auxReporte(hIzq, fecha_desde, fecha_hasta, ventasEncontradas);
-        }
-        if(hDer != null){
-            return auxReporte(hDer, fecha_desde, fecha_hasta, ventasEncontradas);
-        }
-        
-        return ventasEncontradas;
-    }
-    
-    public ILista<IElementoAB<Documento>> reporteVentasPorProd(int codigo){
+    public ILista<Documento> reporteVentasPorProd(String codigo){
         INodo<IArbolBB<Documento>> nodoArbolVentas = listaDocumentos.buscar("Venta");
         IArbolBB<Documento> arbolVentas = nodoArbolVentas.getDato();
-        IElementoAB<Documento> elemVenta = arbolVentas.getRaiz();
-        ILista<IElementoAB<Documento>> ventasProd = new Lista<>();
+        
+        ILista<Documento> ventasProd = new Lista<>();
         try{
-            if(elemVenta != null){
-                return auxReporteVentasPorProd(codigo, elemVenta, ventasProd);
+            if(arbolVentas != null){
+                arbolVentas.getRaiz().buscarParametro("codigoProducto", codigo, ventasProd);
             }
             else{
                 throw new NullNodeException("No existen ventas de ningún producto registradas hasta el momento.");
@@ -208,39 +177,20 @@ public class GestorDocumentos {
         return ventasProd;
     }
     
-    public ILista<IElementoAB<Documento>> auxReporteVentasPorProd(int codigo, IElementoAB elemVenta, ILista ventas){
-        IElementoAB<Documento> hIzq = elemVenta.getHijoIzq();
-        IElementoAB<Documento> hDer = elemVenta.getHijoDer();
-        IElementoAB<Documento> nodoActual = new TElementoAB(elemVenta.getEtiqueta(), elemVenta.getDatos());
-        Documento venta = nodoActual.getDatos();
-        int prodEnVenta = venta.getCodigoProd();
-        
-        if(prodEnVenta == codigo){
-            ventas.insertar(new Nodo(nodoActual.getEtiqueta(), nodoActual.getDatos()));
-        }
-        if(hIzq != null){
-            return auxReporteVentasPorProd(codigo, hIzq, ventas);
-        }
-        if(hDer != null){
-            return auxReporteVentasPorProd(codigo, hDer, ventas);
-        }
-        return ventas;
-    }
-    
-    public ILista<IElementoAB<Documento>> movimientosPorArea(String area){
+    public ILista<Documento> movimientosPorArea(String area){
         IArbolBB<Documento> ventas = listaDocumentos.buscar("Venta").getDato();
         IElementoAB nodoVenta = ventas.getRaiz();
         IArbolBB<Documento> compras = listaDocumentos.buscar("Compra").getDato();
         IElementoAB nodoCompra = compras.getRaiz();
         
-        ILista<IElementoAB<Documento>> listaDocsArea = new Lista<>();
+        ILista<Documento> listaDocsArea = new Lista<>();
         
         try{
             if(nodoVenta != null){
-                return auxMovimientosPorArea(area, nodoVenta, listaDocsArea);
+                nodoVenta.buscarParametro("areaAplicacion", area, listaDocsArea);
             }
             if(nodoCompra != null){
-               return auxMovimientosPorArea(area, nodoCompra, listaDocsArea);
+               nodoCompra.buscarParametro("areaAplicacion", area, listaDocsArea);
 
             }
             if((nodoVenta == null) && (nodoCompra == null)){
@@ -251,23 +201,6 @@ public class GestorDocumentos {
             ex.getMessage();
         }
         
-        return listaDocsArea;
-    }
-    
-    public ILista<IElementoAB<Documento>> auxMovimientosPorArea(String areaAp, IElementoAB<Documento> nodo, ILista<IElementoAB<Documento>> listaDocsArea){    
-        
-        Documento doc = nodo.getDatos();
-        IElementoAB<Documento> hIzq = nodo.getHijoIzq();
-        IElementoAB<Documento> hDer = nodo.getHijoDer();
-        if(doc.areaAplicacion.equals(areaAp)){
-            listaDocsArea.insertarOrdenado(new Nodo(doc.fechaDocumento, doc));
-        }
-        if(hIzq != null){
-            return auxMovimientosPorArea(areaAp, nodo, listaDocsArea);
-        }
-        if(hDer != null){
-            return auxMovimientosPorArea(areaAp, nodo, listaDocsArea);
-        }
         return listaDocsArea;
     }
     
@@ -324,4 +257,5 @@ public class GestorDocumentos {
         
         return promedio;
     }
+    
 }

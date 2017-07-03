@@ -15,11 +15,12 @@ public class Documento implements IDocumento{
     
     public Date fechaDocumento;
     public Date fechaModificacion;
-    public int tipoDocumento;
+    public String tipoDocumento;
     public static int ultimoId = 0;
     public Comparable id;
     public int codigoProducto;
     public String descripcionCorta;
+    public double precioUnitario;
     public String areaAplicacion;
     public int cantidad;
     public double total;
@@ -37,7 +38,7 @@ public class Documento implements IDocumento{
      * @param tipo_documento 
      * @param nroDoc 
      */
-    public Documento(int codProducto, String descCorta, String areaAp, int cantidad, double total, int tipo_documento, int nroDoc){
+    public Documento(int codProducto, String descCorta, String areaAp, int cantidad, double total, String tipo_documento, int nroDoc){
         this.fechaDocumento = ManejadorFechas.obtenerFecha();
         this.fechaModificacion = ManejadorFechas.obtenerFecha();
         this.tipoDocumento = tipo_documento;
@@ -59,13 +60,17 @@ public class Documento implements IDocumento{
     
     
     private void setNroDocumento(int nroDoc){
-        if(this.tipoDocumento == 1){
+        if(this.tipoDocumento.equals("Venta")){
             this.id = ultimoId + 1;
             ultimoId += 1;
         }
         else{
             this.id = nroDoc;
         }
+    }
+    
+    public void setPrecioUnitario(double precio){
+        this.precioUnitario = precio;
     }
     
     
@@ -77,6 +82,14 @@ public class Documento implements IDocumento{
     @Override
     public double getTotal(){
         return this.total;
+    }
+    
+    public String getTipoDoc(){
+        return this.tipoDocumento;
+    }
+    
+    public String getDescCorta(){
+        return this.descripcionCorta;
     }
     
     @Override
@@ -112,6 +125,11 @@ public class Documento implements IDocumento{
     @Override
     public void setTotal(double total){
         this.total = total;
+    }
+
+    @Override
+    public double getPrecioUnitario() {
+        return this.precioUnitario;
     }
     
     

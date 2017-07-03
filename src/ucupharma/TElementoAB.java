@@ -3,6 +3,7 @@ package ucupharma;
 
 import Interfaces.*;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -180,6 +181,38 @@ public class TElementoAB<T> implements IElementoAB<T> {
         
         
     }
+    
+    
+    @Override
+    public void reporteVentas(Date fDesde, Date fHasta, ILista<T> lista){
+        try{
+            Class datoClass = this.datos.getClass();
+            Field paramABuscar = datoClass.getDeclaredField("fechaDocumento");
+            paramABuscar.setAccessible(true);
+            
+            String vAct = paramABuscar.get(this.datos).toString();
+            Date fechaAct = ManejadorFechas.crearFecha(vAct);
+            
+            if(fechaAct.after(fDesde) && fechaAct.before(fHasta)){
+                lista.insertarOrdenado(new Nodo(this.etiqueta, this.datos));
+            }
+            if(this.hijoIzq != null){
+                hijoIzq.reporteVentas(fDesde, fHasta, lista);
+            }
+            if(this.hijoDer != null){
+                hijoDer.reporteVentas(fDesde, fHasta, lista);
+            }
+            
+        } catch (NoSuchFieldException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(TElementoAB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * @return recorrida en inorden del subArbol que cuelga del elemento actual
      */
@@ -288,5 +321,7 @@ public class TElementoAB<T> implements IElementoAB<T> {
         setHijoDer(null);
         return elHijo;
     }
+
+ 
 
 }

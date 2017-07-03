@@ -3,6 +3,7 @@ package Interfaces;
 
 import java.util.LinkedList;
 import Interfaces.*;
+import java.util.Date;
 
 public interface IElementoAB<T> {
 
@@ -93,4 +94,7 @@ public interface IElementoAB<T> {
     public void listarTodos(ILista<T> list);
     
     public void listarAreas(ILista<ILista<T>> list);
+    
+    public void reporteVentas(Date fecha_desde, Date fecha_hasta, ILista<T> lista);
+    
 }

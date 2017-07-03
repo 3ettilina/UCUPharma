@@ -31,6 +31,10 @@ public class Farmacia {
         documentos.vender(clave, cantidad);
     }
     
+    public void comprar(int numDoc, int clave, int cantidad){
+        documentos.comprar(numDoc, clave, cantidad);
+    }
+    
     /**
      * Método que permite devolver cierta cantidad de un producto vendido. Modificando las ventas.
      * @param numDocumento - Número de documento de la venta.
@@ -45,9 +49,10 @@ public class Farmacia {
      * Método que devuelve un reporte de ventas utilizando un rango de fechas.
      * @param fecha_desde - Fecha anterior desde donde se comienza la búsqueda.
      * @param fecha_hasta - Fecha más reciente hasta donde se busca.
+     * @return 
      */
-    public void reporte(String fecha_desde, String fecha_hasta){
-        documentos.reporte(fecha_desde, fecha_hasta);
+    public ILista<Documento> reporte(String fecha_desde, String fecha_hasta){
+        return documentos.reporte(fecha_desde, fecha_hasta);
     }
             
     /**
@@ -118,5 +123,14 @@ public class Farmacia {
     public ILista<IProducto> buscarVencimientos(String año){
         return stock.reporteVencimientos(año);
     }
+    
+    public ILista<Documento> ventasPorProd(String codigo){
+        return documentos.reporteVentasPorProd(codigo);
+    }
+    
+    public ILista<Documento> movsPorArea(String area){
+        return documentos.movimientosPorArea(area);
+    }
+    
 
 }

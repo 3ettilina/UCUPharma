@@ -3,6 +3,8 @@ package ucupharma;
 
 import Exceptions.*;
 import Interfaces.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class TArbolBB<T> implements IArbolBB<T> {
@@ -141,6 +143,18 @@ public class TArbolBB<T> implements IArbolBB<T> {
         }
         return lista;
     }
+    
+    @Override
+    public ILista<T> reporteFechas(String fecha_desde, String fecha_hasta, ILista<T> listaVentas){
+        Date fDesde = ManejadorFechas.crearFecha(fecha_desde);
+        Date fHasta = ManejadorFechas.crearFecha(fecha_hasta);
+        if(esVacio()){
+            return null;
+        }
+        else{
+            this.raiz.reporteVentas(fDesde, fHasta, listaVentas);
+        }
+        return listaVentas;
+    }
 
-   
 }

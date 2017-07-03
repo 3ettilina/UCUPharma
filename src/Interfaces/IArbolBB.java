@@ -58,8 +58,7 @@ public interface IArbolBB<T> {
      */
     public LinkedList<Comparable> inorden( );
 
-  
-	
-	
+    public ILista<T> reporteFechas(String fecha_desde, String fecha_hasta, ILista<T> listaVentas);
+    public ILista<T> listarTodos();
 }
 

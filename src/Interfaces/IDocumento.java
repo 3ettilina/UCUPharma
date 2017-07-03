@@ -19,6 +19,10 @@ public interface IDocumento {
      */
     public int getCodigoProd();
     
+    public double getPrecioUnitario();
+    
+    public String getTipoDoc(); 
+    
     /**
      * Retorna el monto total de la venta.
      * @return 
