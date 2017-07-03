@@ -7,7 +7,6 @@ package ucupharma;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import ucupharma.*;
 import Interfaces.*;
 
 /**
@@ -28,8 +27,19 @@ public class StockTest {
         ILista<IProducto> resObt = ucu.buscarPorDescCorta("WE");
         IProducto prodObt = resObt.buscar(clave).getDato();
         String codObt = prodObt.getDescripcionCorta();
-        //100011;1900-01-01 00:00:00;2016-09-23 16:30:18;1190;WELLA FORM CR. 55GR.;WELLA FORM CREMA 55 GRAMOS;Activo;false;false;2011;Quimioterápico 
+        //111;1900-01-01 00:00:00;2016-09-23 16:30:18;1190;WELLA FORM CR. 55GR.;WELLA FORM CREMA 55 GRAMOS;Activo;false;false;2011;Quimioterápico 
         assertEquals(resExp, codObt);
+    }
+    
+    @Test
+    public void testCargarStock(){
+        ucu.cargarProductos("C:\\farmacia_articles_prueba.csv", "SI");
+        ucu.cargarStock("C:\\farmacia_stock_prueba.csv");
+        Comparable clave = 110;
+        int resObt = ucu.buscarPorCodigo(110).getDatos().getCantidad();
+        int resExp = 4490;
+        
+        assertEquals(resExp, resObt);
     }
     
     @Test
@@ -52,6 +62,17 @@ public class StockTest {
         String descEncontrada = prodObt.getDato().getDescripcionCorta();
         String descEsperada = "PRODUCTO PRUEBA";
         assertEquals(descEsperada, descEncontrada);
+    }
+    
+    @Test
+    public void testAltaStock(){
+        ucu.cargarProductos("C:\\farmacia_articles_prueba.csv", "SI");
+        int codigo = 101;
+        int cantidad = 20;
+        ucu.altaStock(codigo, cantidad);
+        int resObt = ucu.buscarPorCodigo(codigo).getDatos().getCantidad();
+        int resExp = 20;
+        assertEquals(resExp, resObt);
     }
     
 }

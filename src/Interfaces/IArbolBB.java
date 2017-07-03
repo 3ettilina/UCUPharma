@@ -58,8 +58,33 @@ public interface IArbolBB<T> {
      */
     public LinkedList<Comparable> inorden( );
 
+    /**
+     * Método que devuelve una lista con todos los productos vendidos en un rango de fechas dado.
+     * @param fecha_desde
+     * @param fecha_hasta
+     * @param listaVentas
+     * @return ILista<T> con Ventas.
+     */
     public ILista<T> reporteFechas(String fecha_desde, String fecha_hasta, ILista<T> listaVentas);
+    
+    /**
+     * Método que lista todos los productos
+     * @return ILista<T> con los productos dentro.
+     */
     public ILista<T> listarTodos();
+    
+    /**
+     * Método que elimina un área de aplicación
+     * @param area
+     * @return Devuelve un String con el mensaje de confirmación
+     */
     public String eliminarArea(String area);
+    
+    /**
+     * Método que retorna el promedio de ventas de un producto dado
+     * @param codigo
+     * @return 
+     */
+    public Object[] promedioVentas(int codigo);
 }
 

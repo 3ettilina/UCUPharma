@@ -28,6 +28,20 @@ public class Stock {
         return arbolStock;
     }
     
+    /**
+     * Alta de producto manual.
+     * @param codigo
+     * @param descCorta
+     * @param descLarga
+     * @param cantidad
+     * @param precio
+     * @param estado
+     * @param refri
+     * @param receta
+     * @param vencimiento
+     * @param areaApl
+     * @return 
+     */
     public String nuevoProducto(int codigo, String descCorta, String descLarga, int cantidad, double precio, String estado, Boolean refri, Boolean receta, int vencimiento, String areaApl){
         Date fecha = ManejadorFechas.obtenerFecha();
         IElementoAB<IProducto> prodBuscado = arbolStock.buscar(codigo);
@@ -107,6 +121,11 @@ public class Stock {
         
     }
     
+    /**
+     * Método que permite dar de baja un producto.
+     * @param codigo
+     * @return 
+     */
     public String eliminarProducto(Comparable codigo){
         IElementoAB nodo = arbolStock.buscar(codigo);
         if(nodo != null){
@@ -237,6 +256,11 @@ public class Stock {
         return listEncontrados;
     }
     
+    /**
+     * Método que permite buscar por descripción larga de producto
+     * @param descripcion - descripción parcial o completa a buscar
+     * @return 
+     */
     public ILista<IProducto> buscarPorDescLarga(String descripcion){
         ILista<IProducto> listEncontrados = new Lista();
         try {
@@ -273,6 +297,10 @@ public class Stock {
         return productos;
     }
     
+    /**
+     * Método que lista todos los productos separados por área.
+     * @return 
+     */
     public ILista<ILista<IProducto>> listarPorArea(){
         IElementoAB<IProducto> raiz = arbolStock.getRaiz();
         ILista<ILista<IProducto>> listaAreas = new Lista<>();
@@ -292,6 +320,11 @@ public class Stock {
         return listaAreas;
     }
     
+    /**
+     * Método que devuelve una lista con los productos que vencen en un año dado.
+     * @param año
+     * @return 
+     */
     public ILista<IProducto> reporteVencimientos(String año){
         ILista<IProducto> prodsAVencer = new Lista<>();
         IElementoAB<IProducto> nodo = arbolStock.getRaiz();
@@ -310,6 +343,11 @@ public class Stock {
         return prodsAVencer;
     }
     
+    /**
+     * Método que permite eliminar un área de aplicación.
+     * @param area
+     * @return 
+     */
     public String eliminarArea(String area){
         try{
             if(arbolStock != null){

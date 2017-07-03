@@ -112,6 +112,13 @@ public class GestorDocumentos {
         }
     }
     
+    /**
+     * Método que permite vender un producto
+     * @param numDocumento
+     * @param codigo
+     * @param cantidad
+     * @return 
+     */
     public String comprar(int numDocumento, int codigo, int cantidad){
         IElementoAB<IProducto> nodoProd = arbolStock.buscar(codigo);
         if (nodoProd != null){
@@ -139,6 +146,12 @@ public class GestorDocumentos {
         }
     }
     
+    /**
+     * Método que devuelve una lista con documentos de venta, que contiene los productos vendidos en un rango de fechas dado
+     * @param fecha_desde
+     * @param fecha_hasta
+     * @return 
+     */
     public ILista<Documento> reporte(String fecha_desde, String fecha_hasta){
         Date fDesde = ManejadorFechas.crearFecha(fecha_desde);
         Date fHasta = ManejadorFechas.crearFecha(fecha_hasta);
@@ -160,6 +173,11 @@ public class GestorDocumentos {
         return lista;
     }
     
+    /**
+     * Método que devuelve una lista con documentos de venta de un producto dado.
+     * @param codigo de producto
+     * @return 
+     */
     public ILista<Documento> reporteVentasPorProd(String codigo){
         INodo<IArbolBB<Documento>> nodoArbolVentas = listaDocumentos.buscar("Venta");
         IArbolBB<Documento> arbolVentas = nodoArbolVentas.getDato();
@@ -180,6 +198,11 @@ public class GestorDocumentos {
         return ventasProd;
     }
     
+    /**
+     * Método que devuelve una lista con los movimientos (Compras y Ventas) de los productos de un área.
+     * @param area
+     * @return 
+     */
     public ILista<Documento> movimientosPorArea(String area){
         IArbolBB<Documento> ventas = listaDocumentos.buscar("Venta").getDato();
         IElementoAB nodoVenta = ventas.getRaiz();
@@ -207,18 +230,16 @@ public class GestorDocumentos {
         return listaDocsArea;
     }
     
+    /**
+     * Método que devuelve el promedio de ventas de un producto
+     * @param codigo - del producto
+     * @return vector de datos para mostrar en pantalla.
+     */
     public Object[] promedioVentas(int codigo){
         IArbolBB<Documento> arbolVenta = listaDocumentos.buscar("Venta").getDato();
-        IElementoAB<Documento> nodoVenta = arbolVenta.getRaiz();
-        Object[] vector = new Object[5];
-        ILista<String> meses = new Lista<>();
-        int cantMeses = meses.cantElementos();
-        int cantVentas = 0;
-        double total = 0.0;
-        double promedio = 0.0;
         try{
-            if(nodoVenta != null){
-                nodoVenta.promedioVentas(codigo, total, cantMeses, cantVentas, meses, promedio);
+            if(arbolVenta != null){
+                return arbolVenta.promedioVentas(codigo);
             }
             else{
                 throw new NullNodeException("No hay ventas realizadas.");
@@ -227,7 +248,7 @@ public class GestorDocumentos {
         catch(NullNodeException ex){
             ex.getMessage();
         }
-        return vector;
+        return null;
     }
     
 }
