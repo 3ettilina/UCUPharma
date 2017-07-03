@@ -29,7 +29,7 @@ public class Main {
         UcuPharma.cargarStock("C:\\farmacia_stock_big.csv");
         
         UCUPharmaMainForm mainForm = new UCUPharmaMainForm(UcuPharma);
-        mainForm.setSize(1000, 700);
+        mainForm.setSize(900, 600);
         mainForm.setVisible(true);
         
         
