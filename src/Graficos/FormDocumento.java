@@ -8,6 +8,7 @@ package Graficos;
 import Exceptions.NullNodeException;
 import Interfaces.ILista;
 import Interfaces.INodo;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import ucupharma.Documento;
 import ucupharma.Farmacia;
@@ -24,10 +25,12 @@ public class FormDocumento extends javax.swing.JFrame {
      */
     public FormDocumento() {
         initComponents();
+        
     }
     
     public FormDocumento(Farmacia pharm) {
         this.ucus = pharm;
+        this.setTitle("UCUPharma - Ingreso de documentos.");
         initComponents();
     }
 
@@ -43,6 +46,7 @@ public class FormDocumento extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -70,6 +74,13 @@ public class FormDocumento extends javax.swing.JFrame {
             }
         });
 
+        jRadioButton3.setText("Devolución");
+        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -79,6 +90,8 @@ public class FormDocumento extends javax.swing.JFrame {
                 .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -87,7 +100,8 @@ public class FormDocumento extends javax.swing.JFrame {
                 .addContainerGap(14, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(jRadioButton2)
+                    .addComponent(jRadioButton3))
                 .addContainerGap())
         );
 
@@ -113,9 +127,8 @@ public class FormDocumento extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jTextField2)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextField1))
                 .addGap(36, 36, 36)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,15 +194,17 @@ public class FormDocumento extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        if(jRadioButton2.isSelected()){
+        if(jRadioButton2.isSelected() || jRadioButton3.isSelected()){
+            jRadioButton3.setSelected(false);
             jRadioButton2.setSelected(false);
         }
         jTextField2.setEnabled(true);
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        if(jRadioButton1.isSelected()){
+        if(jRadioButton1.isSelected() || jRadioButton3.isSelected()){
             jRadioButton1.setSelected(false);
+            jRadioButton3.setSelected(false);
         }
         jTextField2.setEnabled(false);
     }//GEN-LAST:event_jRadioButton2ActionPerformed
@@ -206,10 +221,29 @@ public class FormDocumento extends javax.swing.JFrame {
                     int cantidad = Integer.parseInt(jTextField3.getText());
                     
                     if(numero != 0 && codigo != 0 && cantidad != 0){
-                        ucus.comprar(numero, codigo, cantidad);
+                        String ret = ucus.comprar(numero, codigo, cantidad);
+                        if(ret.equals("El código ingresado no fue encontrado en la base de datos de productos. ¿Desea ingresarlo?")){
+                            int showConfirmDialog = JOptionPane.showConfirmDialog(null, ret);
+                            jTextField1.setText("");
+                            jTextField2.setText("");
+                            jTextField3.setText("");
+                            if(showConfirmDialog == 0){
+                                FormProductos form = new FormProductos(ucus);
+                                
+                                form.setVisible(true);
+                            }
+                            else{
+                                this.dispose();
+                            }
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, ret);
+                            jTextField1.setText("");
+                            jTextField2.setText("");
+                            jTextField3.setText("");
+                        }
+                        
                     }
-                    
-                    
                 }
                 else{
                     throw new NullNodeException("No se ha encontrado producto con ese código.");
@@ -217,9 +251,7 @@ public class FormDocumento extends javax.swing.JFrame {
                 }
             }
             catch(NullNodeException ex){
-                Alerta cartel = new Alerta(ex.getMessage());
-                cartel.setSize(300, 200);
-                cartel.setVisible(true);
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
             
             
@@ -232,25 +264,65 @@ public class FormDocumento extends javax.swing.JFrame {
                     int cantidad = Integer.parseInt(jTextField3.getText());
                     
                     if(codigo != 0 && cantidad != 0){
-                        ucus.vender(codigo, cantidad);
+                        String ret = ucus.vender(codigo, cantidad);
+                        JOptionPane.showMessageDialog(null, ret);
+                        jTextField1.setText("");
+                        jTextField2.setText("");
+                        jTextField3.setText("");
                     }
-                    
                     
                 }
                 else{
+                    
                     throw new NullNodeException("No se ha encontrado producto con ese código.");
                     
                 }
             }
             catch(NullNodeException ex){
-                Alerta cartel = new Alerta(ex.getMessage());
-                cartel.setSize(300, 200);
-                cartel.setVisible(true);
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+                
             }
-            
-            
+        }   
+        if(jRadioButton3.isSelected()){
+
+        try{
+            if(jTextField2.getText() != null && jTextField1.getText() != null && jTextField3.getText() != null){
+                int numero = Integer.parseInt(jTextField2.getText());
+                int codigo = Integer.parseInt(jTextField1.getText());
+                int cantidad = Integer.parseInt(jTextField3.getText());
+
+                if(codigo != 0 && cantidad != 0){
+                    String ret = ucus.devolver(numero, codigo, cantidad);
+                    JOptionPane.showMessageDialog(null, ret);
+                    jTextField1.setText("");
+                    jTextField2.setText("");
+                    jTextField3.setText("");
+                }
+            }
+            else{
+
+                throw new NullNodeException("No se ha encontrado venta con esos datos.");
+
+            }
         }
+        catch(NullNodeException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+
+        }
+
+        this.dispose();
+        }
+        
+    
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+        if(jRadioButton2.isSelected() || jRadioButton1.isSelected()){
+            jRadioButton1.setSelected(false);
+            jRadioButton2.setSelected(false);
+        }
+        jTextField2.setEnabled(true);
+    }//GEN-LAST:event_jRadioButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -297,6 +369,7 @@ public class FormDocumento extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;

@@ -40,8 +40,9 @@ public class GestorDocumentos {
      * Método para generar una venta.
      * @param codigo - Clave del producto a vender.
      * @param cantidad - Cantidad de unidades a vender.
+     * @return 
      */
-    public void vender(int codigo, int cantidad){
+    public String vender(int codigo, int cantidad){
         IElementoAB<IProducto> nodoProd = arbolStock.buscar(codigo);
         if (nodoProd != null){
             IProducto prodAVender = nodoProd.getDatos();
@@ -54,16 +55,16 @@ public class GestorDocumentos {
                 
                 INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Venta");
                 nodoVenta.getDato().insertar(elemVenta);
-                System.out.println("Venta realizada satisfactoriamente. El id de su compra es: " + venta.getId() + ". Lo precisará si desea realizar una devolución.");
+                return ("Venta realizada satisfactoriamente. El id de su compra es: " + venta.getId() + ". Lo precisará si desea realizar una devolución.");
   
             }
             else{
-                System.out.println("La cantidad a vender " + cantidad + " es mayor a la cantidad de items en stock " + prodAVender.getCantidad() + ". Por favor, intentelo nuevamente con la cantidad correcta.");
+                return ("La cantidad a vender " + cantidad + " es mayor a la cantidad de items en stock " + prodAVender.getCantidad() + ". Por favor, intentelo nuevamente con la cantidad correcta.");
                 
             }
         }
         else{
-            System.out.println("El código ingresado no fue encontrado en la base de datos de productos, por favor, verifique.");
+            return ("El código ingresado no fue encontrado en la base de datos de productos, por favor, verifique.");
             
         }
     }
@@ -73,8 +74,9 @@ public class GestorDocumentos {
      * @param numDocumento - Número de documento de la venta.
      * @param codigo - Código del producto a buscar.
      * @param cantidad - Cantidad de unidades a devolver.
+     * @return Mensaje de confirmación
      */
-    public void devolver(int numDocumento, int codigo, int cantidad){
+    public String devolver(int numDocumento, int codigo, int cantidad){
         INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Venta");
         IArbolBB<Documento> arbolVenta = nodoVenta.getDato();
         IElementoAB<Documento> elemVenta = arbolVenta.buscar(numDocumento);
@@ -83,55 +85,56 @@ public class GestorDocumentos {
         
         Date fechaHoy = ManejadorFechas.obtenerFecha();
         
-        if(elemProd != null){
-            IProducto prod = elemProd.getDatos();
-            prod.setCantidad(prod.getCantidad() + cantidad);
-            prod.setUltimaActualizacion(fechaHoy);
-            
-            if(elemVenta != null){
-            Documento venta = elemVenta.getDatos();
-            int cantVendida = venta.getCantidad();
-                if(cantVendida >= cantidad){
-                    venta.setCantidad(venta.getCantidad() - cantidad);
-                    venta.setFechaModificacion(fechaHoy);
-                }
-                else{
-                    System.out.println("La cantidad que desea devolver supera la vendida en este documento. Verifique.");
-                }
-            
+        if(elemVenta != null){
+            if(elemProd != null){
+               IProducto prod = elemProd.getDatos();
+                prod.setCantidad(prod.getCantidad() + cantidad);
+                prod.setUltimaActualizacion(fechaHoy); 
+
+                Documento venta = elemVenta.getDatos();
+                int cantVendida = venta.getCantidad();
+                    if(cantVendida >= cantidad){
+                        venta.setCantidad(venta.getCantidad() - cantidad);
+                        venta.setFechaModificacion(fechaHoy);
+
+                        return "Devolución realizada con éxito. El stock actual del producto (" + prod.getCodigo() + ") es: " + prod.getCantidad();
+                    }
+                    else{
+                        return "La cantidad que desea devolver (" + cantidad + ") supera la vendida en este documento (" + venta.getCantidad() + "). Verifique.";
+                    }
             }
             else{
-                System.out.println("El código de venta no existe en nuestra base de datos. Verifique por favor.");
+                return "El código de venta no existe en nuestra base de datos. Verifique por favor.";
             }
         }
         else{
-            System.out.println("No es posible devolver este producto, ya que UCUPharma no lo comercializa más.");
+            return "El id de venta no existe en nuestra base de datos. No es posible devolver el producto.";
         }
     }
     
-    public void comprar(int numDocumento, int codigo, int cantidad){
+    public String comprar(int numDocumento, int codigo, int cantidad){
         IElementoAB<IProducto> nodoProd = arbolStock.buscar(codigo);
         if (nodoProd != null){
             IProducto prodAComprar = nodoProd.getDatos();
             if (cantidad >= 0){
                 double total = (prodAComprar.getPrecio())*cantidad;
                 Documento compra = new Documento(codigo, prodAComprar.getDescripcionCorta(), prodAComprar.getAreaAplicacion(), cantidad, total, "Compra", numDocumento);
-                
+                compra.setPrecioUnitario(prodAComprar.getPrecio());
                 IElementoAB<Documento> elemVenta = new TElementoAB(compra.getId(), compra);
                 prodAComprar.setCantidad(prodAComprar.getCantidad()+cantidad);
                 
                 INodo<IArbolBB<Documento>> nodoVenta = listaDocumentos.buscar("Compra");
                 nodoVenta.getDato().insertar(elemVenta);
-                System.out.println("Compra realizada satisfactoriamente.");
+                return ("Compra realizada satisfactoriamente.");
   
             }
             else{
-                System.out.println("La cantidad a comprar: " + cantidad + " es menor o igual a cero. Por favor, intentelo nuevamente con la cantidad correcta.");
+                return ("La cantidad a comprar: " + cantidad + " es menor o igual a cero. Por favor, intentelo nuevamente con la cantidad correcta.");
                 
             }
         }
         else{
-            System.out.println("El código ingresado no fue encontrado en la base de datos de productos. ¿Desea ingresarlo?");
+            return("El código ingresado no fue encontrado en la base de datos de productos. ¿Desea ingresarlo?");
             
         }
     }
@@ -204,16 +207,18 @@ public class GestorDocumentos {
         return listaDocsArea;
     }
     
-    public Double promedioVentas(int codigo){
+    public Object[] promedioVentas(int codigo){
         IArbolBB<Documento> arbolVenta = listaDocumentos.buscar("Venta").getDato();
         IElementoAB<Documento> nodoVenta = arbolVenta.getRaiz();
+        Object[] vector = new Object[5];
         ILista<String> meses = new Lista<>();
         int cantMeses = meses.cantElementos();
+        int cantVentas = 0;
         double total = 0.0;
         double promedio = 0.0;
         try{
             if(nodoVenta != null){
-                return auxPromedioVentas(codigo, nodoVenta, total, cantMeses, meses, promedio);
+                nodoVenta.promedioVentas(codigo, total, cantMeses, cantVentas, meses, promedio);
             }
             else{
                 throw new NullNodeException("No hay ventas realizadas.");
@@ -222,40 +227,7 @@ public class GestorDocumentos {
         catch(NullNodeException ex){
             ex.getMessage();
         }
-        return promedio;
-    }
-    
-    public Double auxPromedioVentas(int codigo, IElementoAB<Documento> nodo, double total, int cantMeses, ILista<String> meses, double promedio){
-        IElementoAB hIzq = nodo.getHijoIzq();
-        IElementoAB hDer = nodo.getHijoDer();
-        
-        Documento docActual = nodo.getDatos();
-        int codProdVendido = docActual.getCodigoProd();
-        
-        if(codProdVendido == codigo){
-            String mes = ManejadorFechas.obtenerMes(docActual.getFechaDocumento());
-            INodo<String> mesObtenido = meses.buscar(mes);
-            double totalActual = docActual.getTotal();
-            if(mesObtenido != null){
-                total += totalActual;
-                promedio = total/cantMeses;
-            }
-            else{
-                meses.insertar(new Nodo(mes, null));
-                cantMeses += 1;
-                total += totalActual;
-                promedio = total/cantMeses;
-            }
-            
-        }
-        if(hIzq != null){
-            return auxPromedioVentas(codigo, hIzq, total, cantMeses, meses, promedio);
-        }
-        if(hDer != null){
-            return auxPromedioVentas(codigo, hDer, total, cantMeses, meses, promedio);
-        }
-        
-        return promedio;
+        return vector;
     }
     
 }

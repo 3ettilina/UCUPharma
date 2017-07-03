@@ -6,7 +6,7 @@
 package Graficos;
 import Interfaces.*;
 import Exceptions.*;
-import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import ucupharma.*;
 
@@ -22,10 +22,12 @@ public class InformeMovimientos extends javax.swing.JFrame {
      */
     public InformeMovimientos() {
         initComponents();
+        
     }
     
     public InformeMovimientos(Farmacia farm) {
         this.ucus = farm;
+        this.setTitle("UCUPharma - Informe de movimientos.");
         initComponents();
     }
 
@@ -219,9 +221,7 @@ public class InformeMovimientos extends javax.swing.JFrame {
                 }
             }
             catch(NullNodeException ex){
-                Alerta cartel = new Alerta(ex.getMessage());
-                cartel.setSize(300, 200);
-                cartel.setVisible(true);
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
             
             

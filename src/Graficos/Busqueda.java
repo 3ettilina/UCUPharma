@@ -7,6 +7,7 @@ package Graficos;
 import Interfaces.*;
 import Exceptions.*;
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import ucupharma.*;
 
@@ -22,10 +23,12 @@ public class Busqueda extends javax.swing.JFrame {
      */
     public Busqueda() {
         initComponents();
+        
     }
     
     public Busqueda(Farmacia farm) {
         this.ucus = farm;
+        this.setTitle("UCUPharma - Búsqueda de documentos.");
         initComponents();
     }
 
@@ -304,14 +307,13 @@ public class Busqueda extends javax.swing.JFrame {
                 model.addRow(row);
                 }
                 else{
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado producto(s) con el atributo especificado.");
                     throw new NullNodeException("No se ha encontrado producto con ese código.");
                     
                 }
             }
             catch(NullNodeException ex){
-                Alerta cartel = new Alerta(ex.getMessage());
-                cartel.setSize(300, 200);
-                cartel.setVisible(true);
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
             
             
@@ -376,7 +378,7 @@ public class Busqueda extends javax.swing.JFrame {
         }
         
         if(jRadioButton4.isSelected()){
-            String[] header = new String[] {"Código", "Descripción", "Cantidad", "Precio","Área de aplicación", "Vencimiento"};
+            String[] header = new String[] {"Código", "Descripción", "Cantidad", "Precio", "Área de aplicación", "Vencimiento"};
             model.setColumnIdentifiers(header);
             int cantRows = model.getRowCount();
             if(cantRows > 0){
@@ -389,7 +391,7 @@ public class Busqueda extends javax.swing.JFrame {
             
             INodo<IProducto> prodAct = resultado.getPrimero();
             while(prodAct != null){
-                String codigo = String.valueOf(prodAct.getEtiqueta());
+                String codigo = String.valueOf(prodAct.getDato().getCodigo());
                 String desc = prodAct.getDato().getDescripcionCorta();
                 String cantidad = String.valueOf(prodAct.getDato().getCantidad());
                 String precio = String.valueOf(prodAct.getDato().getPrecio());

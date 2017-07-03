@@ -4,6 +4,7 @@ package Interfaces;
 import java.util.LinkedList;
 import Interfaces.*;
 import java.util.Date;
+import ucupharma.Documento;
 
 public interface IElementoAB<T> {
 
@@ -88,13 +89,51 @@ public interface IElementoAB<T> {
      * @return 
      */
     public IElementoAB<T> eliminar(Comparable unaEtiqueta);
-	
+
+    /**
+     * Método que devuelve uno o más elementos, buscando en el árbol correspondiente utilizando el parámetro a buscr (nombre del atributo)
+     * y un String del valor que se desea buscar.
+     * @param param
+     * @param aBuscar
+     * @param lis 
+     */
     public void buscarParametro(String param, String aBuscar, ILista lis);
     
+    /**
+     * Método que lista todos los elementos de un árbol
+     * @param list 
+     */
     public void listarTodos(ILista<T> list);
     
+    /**
+     * Método que lista los elementos, ordenados por área y por descripción
+     * @param list 
+     */
     public void listarAreas(ILista<ILista<T>> list);
     
+    /**
+     * Método que devuelve el reporte de ventas en un rango de fechas dado.
+     * @param fecha_desde
+     * @param fecha_hasta
+     * @param lista 
+     */
     public void reporteVentas(Date fecha_desde, Date fecha_hasta, ILista<T> lista);
     
+    /**
+     * Método que elimina un área de aplicación. Impactando sobre los elementos del árbol.
+     * @param area 
+     */
+    public void eliminarArea(String area);
+    
+    /**
+     * Método que retorna el promedio de ventas de un producto
+     * @param codigo
+     * @param total
+     * @param cantMeses
+     * @param cantVentas
+     * @param meses
+     * @param promedio
+     * @return vector con valores para insertar en tabla
+     */
+    public Object[] promedioVentas(int codigo, double total, int cantMeses, int cantVentas, ILista<String> meses, double promedio);
 }

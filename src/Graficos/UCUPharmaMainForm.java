@@ -5,6 +5,10 @@ package Graficos;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import ucupharma.*;
 /**
  *
@@ -20,6 +24,7 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
     public UCUPharmaMainForm(Farmacia pharm) {
         this.ucus = pharm;
         initComponents();
+        this.setTitle("UCUPharma - Gestión integral de Stock");
     }
 
     private UCUPharmaMainForm() {
@@ -41,12 +46,11 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuBuscar = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -62,18 +66,22 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
 
         jMenu1.setText("Archivo");
 
-        jMenuItem1.setText("Cargar archivo");
+        jMenuItem1.setText("Cargar productos");
         jMenuItem1.setActionCommand("cargarArchivo");
-        jMenu1.add(jMenuItem1);
-
-        jMenuItem7.setText("Salir");
-        jMenuItem7.setActionCommand("salir");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem7);
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem3.setText("Cargar stock");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
 
         jMenuBar1.add(jMenu1);
 
@@ -89,15 +97,21 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
         jMenu2.add(menuBuscar);
         jMenu2.add(jSeparator1);
 
-        jMenuItem4.setText("Ingreso");
+        jMenuItem4.setText("Ingreso/Modificacion");
         jMenuItem4.setActionCommand("ingreso");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
-        jMenuItem6.setText("Modificación");
-        jMenuItem6.setActionCommand("modificacionIndividual");
-        jMenu2.add(jMenuItem6);
-
         jMenuItem8.setText("Baja");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem8);
 
         jMenuBar1.add(jMenu2);
@@ -180,9 +194,47 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
         formMovs.setVisible(true);
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        FormProductos formProd = new FormProductos(ucus);
+        formProd.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        FormBajaProductos formBaja = new FormBajaProductos(ucus);
+        formBaja.setVisible(true);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        JFileChooser selector = new JFileChooser();
+        selector.setFileFilter((new FileNameExtensionFilter("Productos en .CSV","csv")));
+        int result = selector.showOpenDialog(this);
+        if(result== JFileChooser.APPROVE_OPTION){
+            File selectedFile = selector.getSelectedFile();
+            String nombreArchivo = selectedFile.getAbsolutePath();
+            int showConfirmDialog = JOptionPane.showConfirmDialog(null, "¿Desea modificar los productos existentes?");
+            if (showConfirmDialog == 0){
+                this.ucus.cargarProductos(nombreArchivo, "SI");
+                JOptionPane.showMessageDialog(null, "Archivo de productos cargado con exito. Los productos existentes fueron modificados");
+            }
+            else{
+                this.ucus.cargarProductos(nombreArchivo, "NO");
+            JOptionPane.showMessageDialog(null, "Archivo de productos cargado con exito");
+            }
+            
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        JFileChooser selector = new JFileChooser();
+        selector.setFileFilter((new FileNameExtensionFilter("Productos en .CSV","csv")));
+        int result = selector.showOpenDialog(this);
+        if(result== JFileChooser.APPROVE_OPTION){
+            File selectedFile = selector.getSelectedFile();
+            String nombreArchivo = selectedFile.getAbsolutePath();
+            this.ucus.cargarStock(nombreArchivo);
+            JOptionPane.showMessageDialog(null, "Archivo de stock cargado con exito");
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,10 +281,9 @@ public class UCUPharmaMainForm extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPopupMenu.Separator jSeparator1;

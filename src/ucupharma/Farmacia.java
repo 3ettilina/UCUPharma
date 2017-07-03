@@ -22,17 +22,21 @@ public class Farmacia {
         Farmacia.documentos = new GestorDocumentos();
     }
     
+    
+    public String nuevoProd(int codigo, String descCorta, String descLarga, int cantidad, double precio, String estado, Boolean refri, Boolean receta, int vencimiento, String areaApl){
+        return stock.nuevoProducto(codigo, descCorta, descLarga, cantidad, precio, estado, refri, receta, vencimiento, areaApl);
+    }
     /**
      * Método para generar una venta.
      * @param clave - Clave del producto a vender.
      * @param cantidad - Cantidad de unidades a vender.
      */
-    public void vender(int clave, int cantidad){
-        documentos.vender(clave, cantidad);
+    public String vender(int clave, int cantidad){
+        return documentos.vender(clave, cantidad);
     }
     
-    public void comprar(int numDoc, int clave, int cantidad){
-        documentos.comprar(numDoc, clave, cantidad);
+    public String comprar(int numDoc, int clave, int cantidad){
+        return documentos.comprar(numDoc, clave, cantidad);
     }
     
     /**
@@ -41,8 +45,8 @@ public class Farmacia {
      * @param codigo - Código del producto a buscar.
      * @param cantidad - Cantidad de unidades a devolver.
      */
-    public void devolver(int numDocumento, int codigo, int cantidad){
-        documentos.devolver(numDocumento, codigo, cantidad);
+    public String devolver(int numDocumento, int codigo, int cantidad){
+        return documentos.devolver(numDocumento, codigo, cantidad);
     }
     
     /**
@@ -88,6 +92,28 @@ public class Farmacia {
      */
     public void cargarStock(String rutaArchivo){
         stock.cargarStock(rutaArchivo);
+    }
+    
+    public String eliminarProd(int codigo){
+        return stock.eliminarProducto(codigo);
+    }
+    
+    /**
+     * Método que elimina un área de aplicación. Impactando sobre la estructura de productos.
+     * @param area
+     * @return 
+     */
+    public String eliminarArea(String area){
+        return stock.eliminarArea(area);
+    }
+    
+    /**
+     * Método que devuelve el promedio de ventas mensuales de un producto
+     * @param codigo
+     * @return 
+     */
+    public Object[] promedioVentas(int codigo){
+        return documentos.promedioVentas(codigo);
     }
     
     /**

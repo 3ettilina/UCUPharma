@@ -145,6 +145,17 @@ public class TArbolBB<T> implements IArbolBB<T> {
     }
     
     @Override
+    public String eliminarArea(String area){
+        if(esVacio()){
+            return null;
+        }
+        else{
+            this.raiz.eliminarArea(area);
+        }
+        return "El área (" + area + ") se ha eliminado con éxito.";
+    }
+    
+    @Override
     public ILista<T> reporteFechas(String fecha_desde, String fecha_hasta, ILista<T> listaVentas){
         Date fDesde = ManejadorFechas.crearFecha(fecha_desde);
         Date fHasta = ManejadorFechas.crearFecha(fecha_hasta);
@@ -155,6 +166,23 @@ public class TArbolBB<T> implements IArbolBB<T> {
             this.raiz.reporteVentas(fDesde, fHasta, listaVentas);
         }
         return listaVentas;
+    }
+    
+    public Object[] promedioVentas(int codigo){
+        Object[] vector = new Object[5];
+        ILista<String> meses = new Lista<>();
+        int cantMeses = meses.cantElementos();
+        double total = 0.0;
+        double promedio = 0.0;
+        int cantVentas = 0;
+        
+        if(esVacio()){
+            return null;
+        }
+        else{
+            this.raiz.promedioVentas(codigo, total, cantMeses, cantVentas, meses, promedio);
+        }
+        return vector;
     }
 
 }

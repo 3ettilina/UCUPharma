@@ -7,6 +7,7 @@ package Graficos;
 import Interfaces.*;
 import Exceptions.*;
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import ucupharma.*;
 
@@ -22,6 +23,7 @@ public class InformeVentas extends javax.swing.JFrame {
      */
     public InformeVentas() {
         initComponents();
+        this.setTitle("UCUPharma - Informe de Ventas.");
     }
     
     public InformeVentas(Farmacia farm) {
@@ -331,9 +333,7 @@ public class InformeVentas extends javax.swing.JFrame {
                 }
             }
             catch(NullNodeException ex){
-                Alerta cartel = new Alerta(ex.getMessage());
-                cartel.setSize(300, 200);
-                cartel.setVisible(true);
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
             
             
@@ -371,7 +371,7 @@ public class InformeVentas extends javax.swing.JFrame {
         }
         
         if(jRadioButton9.isSelected()){
-            String[] header = new String[] {"Código", "Descripcion", "Cant. meses","Cant. ventas", "Promedio mensual"};
+            String[] header = new String[] {"Código", "Descripcion", "Cant. meses", "Cant. ventas", "Promedio mensual"};
             model.setColumnIdentifiers(header);
             int cantRows = model.getRowCount();
             if(cantRows > 0){
@@ -380,22 +380,11 @@ public class InformeVentas extends javax.swing.JFrame {
                 }
             }
             
-            ILista<Documento> resultado = ucus.ventasPorProd(jTextField3.getText());
-            
-            INodo<Documento> docAct = resultado.getPrimero();
-            while(docAct != null){
-                String id = String.valueOf(docAct.getEtiqueta());
-                String codigo = String.valueOf(docAct.getDato().getCodigoProd());
-                String desc = docAct.getDato().getDescCorta();
-                String cantidad = String.valueOf(docAct.getDato().getCantidad());
-                String precio = String.valueOf(docAct.getDato().getPrecioUnitario());
-                String total = String.valueOf(docAct.getDato().getTotal());
-
-
-                Object[] row = {id, codigo, desc, cantidad, precio, total};
+            IElementoAB<IProducto> prod = ucus.buscarPorCodigo(Integer.parseInt(jTextField4.getText()));
+            if(prod != null){
+                Object[] row = ucus.promedioVentas(Integer.parseInt(jTextField4.getText()));
                 model.addRow(row);
-
-                docAct = docAct.getSiguiente();
+                
             }
             
         }

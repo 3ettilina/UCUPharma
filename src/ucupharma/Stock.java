@@ -9,6 +9,7 @@ import Exceptions.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -26,6 +27,35 @@ public class Stock {
     public IArbolBB<IProducto> getArbolProductos(){
         return arbolStock;
     }
+    
+    public String nuevoProducto(int codigo, String descCorta, String descLarga, int cantidad, double precio, String estado, Boolean refri, Boolean receta, int vencimiento, String areaApl){
+        Date fecha = ManejadorFechas.obtenerFecha();
+        IElementoAB<IProducto> prodBuscado = arbolStock.buscar(codigo);
+        if(prodBuscado == null){
+            IProducto prod = new Producto(codigo, fecha, fecha, precio, descCorta, descLarga, estado, refri, receta, vencimiento, areaApl, cantidad);
+            IElementoAB<IProducto> elemProd = new TElementoAB(codigo, prod);
+            arbolStock.insertar(elemProd);
+            return "Producto ingresado satisfactoriamente!";
+        }
+        else{
+            Date fechaHoy = ManejadorFechas.obtenerFecha();
+            IProducto prodEncontrado = prodBuscado.getDatos();
+            prodEncontrado.setDescCorta(descCorta);
+            prodEncontrado.setDescLarga(descLarga);
+            prodEncontrado.setPrecio(precio);
+            prodEncontrado.setEstado(estado);
+            prodEncontrado.setRefrigerado(refri);
+            prodEncontrado.setRequiereReceta(receta);
+            prodEncontrado.setVencimiento(vencimiento);
+            prodEncontrado.setUltimaActualizacion(fechaHoy);
+            prodEncontrado.setAreaAplicacion(areaApl);
+            prodEncontrado.setCantidad(cantidad);
+            
+            return ("El producto que desea ingresar (" + codigo + ") ya se encuentra en el stock. El mismo será modificado.");
+        }
+        
+    }
+    
     /**
      * Método ingresa cantidades a los productos existentes.
      * @param codigo - Código del producto a buscar.
@@ -77,8 +107,16 @@ public class Stock {
         
     }
     
-    public void eliminarProducto(Comparable codigo){
-        arbolStock.eliminar(codigo);
+    public String eliminarProducto(Comparable codigo){
+        IElementoAB nodo = arbolStock.buscar(codigo);
+        if(nodo != null){
+            arbolStock.eliminar(codigo);
+            return ("El producto (" + codigo + ") ha sido eliminado con éxito");
+        }
+        else{
+            return ("No se ha encontrado el prodcuto (" + codigo + ") en nuestra base de datos");
+        }
+        
     }
     
     /**
@@ -166,7 +204,14 @@ public class Stock {
      * @return - Devuelve un producto encontrado.
      */
     public IElementoAB<IProducto> buscarPorCodigo(int clave){
-        return arbolStock.buscar(clave);
+        if(arbolStock.buscar(clave) == null){
+            JOptionPane.showMessageDialog(null, "No existen productos en el Stock. Por favor, verifique.");
+            return null;
+        }
+        else{
+            return arbolStock.buscar(clave);
+        }
+        
     }
     
     /**
@@ -180,6 +225,7 @@ public class Stock {
             IElementoAB<IProducto> raiz = arbolStock.getRaiz();
             
             if (raiz == null){
+                JOptionPane.showMessageDialog(null, "No existen productos en el Stock. Por favor, verifique.");
                 throw new NullNodeException("No existen productos en el Stock. Por favor, verifique.");
             }
             else{
@@ -197,6 +243,8 @@ public class Stock {
             IElementoAB<IProducto> raiz = arbolStock.getRaiz();
             
             if (raiz == null){
+                JOptionPane.showMessageDialog(null, "No existen productos en el Stock. Por favor, verifique.");
+                
                 throw new NullNodeException("No existen productos en el Stock. Por favor, verifique.");
             }
             else{
@@ -217,7 +265,7 @@ public class Stock {
         ILista<IProducto> productos = new Lista<>();
         
         if (raiz == null){
-            System.out.println("No existen productos en el stock.");
+            JOptionPane.showMessageDialog(null, "No existen productos en el Stock. Por favor, verifique.");
         }
         else{
             raiz.listarTodos(productos);
@@ -234,6 +282,7 @@ public class Stock {
                 raiz.listarAreas(listaAreas);
             }
             else{
+                JOptionPane.showMessageDialog(null, "No existen productos en el Stock. Por favor, verifique.");
                 throw new NullNodeException("Por alguna razón no hay artículos en Stock. Por favor, realice una carga de stock.");
             }
         }
@@ -251,6 +300,7 @@ public class Stock {
                 nodo.buscarParametro("vencimiento", año, prodsAVencer);
             }
             else{
+                JOptionPane.showMessageDialog(null, "No existen productos en el Stock con esa fecha de vencimiento.");
                 throw new NullNodeException("Por alguna razón no existen productos en Stock. Por favor, carga un archivo e intentalo nuevamente.");
             }
         }
@@ -260,11 +310,10 @@ public class Stock {
         return prodsAVencer;
     }
     
-    public void eliminarArea(String area){
-        IElementoAB<IProducto> nodoAct = arbolStock.getRaiz();
+    public String eliminarArea(String area){
         try{
-            if(nodoAct != null){
-            auxEliminarArea(area, nodoAct);
+            if(arbolStock != null){
+                return arbolStock.eliminarArea(area);
             }
             else{
                 throw new NullNodeException("Por alguna razón no existen productos en Stock. Intenta cargar un archivo primero.");
@@ -273,24 +322,7 @@ public class Stock {
         catch(NullNodeException ex){
             ex.getMessage();
         }
-        
-    }
-    
-    public void auxEliminarArea(String area, IElementoAB<IProducto> nodo){
-        IElementoAB<IProducto> hIzq = nodo.getHijoIzq();
-        IElementoAB<IProducto> hDer = nodo.getHijoDer();
-        IProducto prodAct = nodo.getDatos();
-        int codigoAct = prodAct.getCodigo();
-        String areaAct = prodAct.getAreaAplicacion();
-        if(areaAct.equals(area)){
-            nodo.eliminar(codigoAct);
-        }
-        if(hIzq != null){
-            auxEliminarArea(area, hIzq);
-        }
-        if(hDer != null){
-            auxEliminarArea(area, hDer);
-        }
+        return "No se ha podido eliminar el área especificada. Verifique";
     }
     
     
