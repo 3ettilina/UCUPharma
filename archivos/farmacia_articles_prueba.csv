@@ -1,0 +1,5 @@
+id;fecha_creacion;ultima_actualizacion;precio;descripcion_corta;descripcion_larga;estado;refrigerado;requiere_receta;vencimiento;categoria
+100;1900-01-01 00:00:00;2016-09-23 16:30:18;1190;PRODUCTO PRUEBA;CRISAN SH.SUAVE    250ML.                                                                          ;Activo;false;false;2008;Anticonvulsivo 
+101;1995-03-27 00:00:00;2016-09-23 16:30:18;1430;CRISAN SH. 2 EN 1  250ML.;CRISAN SH. 2 EN 1  250ML.                                                                          ;Activo;false;false;2009;Ansiolítico 
+110;1995-03-27 00:00:00;2016-09-23 16:30:18;2250;CRISAN SH.INTENSIV.200ML.;CRISAN SH.INTENSIV.200ML.                                                                          ;Activo;false;false;2022;Broncodilatador 
+111;1900-01-01 00:00:00;2016-09-23 16:30:18;1190;WELLA FORM CR. 55GR.;WELLA FORM CREMA 55 GRAMOS                                                                         ;Activo;false;false;2011;Quimioterápico 

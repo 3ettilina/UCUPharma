@@ -25,8 +25,8 @@ public class Main {
         // TODO code application logic here
         Farmacia UcuPharma = new Farmacia("UcuPharma");
         
-        UcuPharma.cargarProductos("C:\\farmacia_articles_big.csv", "NO");
-        UcuPharma.cargarStock("C:\\farmacia_stock_big.csv");
+        UcuPharma.cargarProductos("archivos\\farmacia_articles_big.csv", "NO");
+        UcuPharma.cargarStock("archivos\\farmacia_stock_big.csv");
         
         UCUPharmaMainForm mainForm = new UCUPharmaMainForm(UcuPharma);
         mainForm.setSize(900, 600);
